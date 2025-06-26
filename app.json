@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "choff",
+    "name": "Choff",
     "slug": "choff",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/choffLogo4.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
