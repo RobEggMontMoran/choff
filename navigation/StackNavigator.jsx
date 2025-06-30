@@ -9,6 +9,7 @@ import BrewHistoryScreen from "../screens/BrewHistoryScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import AnalyticsScreen from "../screens/AnalyticsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import CreateAccountScreen from "../screens/CreateAccountScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Analytics" component={AnalyticsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
