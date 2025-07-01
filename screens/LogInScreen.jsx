@@ -6,9 +6,13 @@ const LogInScreen = () => {
   const [password, setPassword] = useState("");
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
+      <View style={styles.headingContainer}>
+        <Text style={styles.headingText}>CHOFF</Text>
+        <Text style={styles.subHeadingText}>Your Daily Brew Companion</Text>
+      </View>
       <View style={styles.inputContainer}>
-        <Text style={styles.title}>Email Address</Text>
+        <Text style={styles.titleText}>Email Address</Text>
         <TextInput
           style={styles.inputBox}
           placeholder="Enter email"
@@ -21,7 +25,7 @@ const LogInScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Text style={styles.title}>Password</Text>
+        <Text style={styles.titleText}>Password</Text>
         <TextInput
           style={styles.inputBox}
           placeholder="Enter password"
@@ -37,17 +41,34 @@ const LogInScreen = () => {
         ) : null}
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Log In" onPress={() => console.log("Logging in...")} />
+        <Button title="Log In" onPress={() => console.log("Logging in...")} color="peru" />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     justifyContent: "center",
     padding: 20,
+    backgroundColor: "blanchedalmond",
+  },
+  headingContainer: {
+    alignItems: "center",
+    marginBottom: 80,
+  },
+  headingText: {
+    fontSize: 65,
+    fontWeight: "bold",
+    color: "saddlebrown",
+    letterSpacing: 3,
+  },
+  subHeadingText: {
+    fontSize: 18,
+    color: "sienna",
+    marginTop: 4,
+    letterSpacing: 1,
   },
   inputContainer: {
     marginBottom: 20,
@@ -58,8 +79,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     borderRadius: 10,
     padding: 15,
+    backgroundColor: "ivory",
   },
-  title: {
+  titleText: {
     fontSize: 17,
     fontWeight: "bold",
     marginBottom: 10,
@@ -71,6 +93,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
+    marginBottom: 80,
   },
 });
 
