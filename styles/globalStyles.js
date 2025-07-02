@@ -104,4 +104,7 @@ export default StyleSheet.create({
   spacerL: {
     marginBottom: 40,
   },
+  spacerXL: {
+    marginBottom: 60,
+  },
 });

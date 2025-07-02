@@ -13,8 +13,9 @@ const LogInScreen = () => {
         <Text style={global.subheadingL}>Your Daily Brew Companion</Text>
       </View>
 
-      <View style={global.spacerL} />
+      <View style={global.spacerXL} />
 
+      {/* Email Input */}
       <View style={global.inputWrapper}>
         <Text style={global.textLabelL}>Email Address</Text>
         <TextInput
@@ -29,6 +30,7 @@ const LogInScreen = () => {
         />
       </View>
 
+      {/* Password Input */}
       <View style={global.inputWrapper}>
         <Text style={global.textLabelL}>Password</Text>
         <TextInput
@@ -41,11 +43,9 @@ const LogInScreen = () => {
           value={password}
           onChangeText={setPassword}
         />
-        {password.length > 0 && password.length < 6 ? (
-          <Text style={global.errorText}>Password must be longer than 5 characters</Text>
-        ) : null}
       </View>
 
+      {/* Submit Button */}
       <View style={local.buttonMargin}>
         <Button title="Log In" onPress={() => console.log("Logging in...")} color="peru" />
       </View>
