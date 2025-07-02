@@ -1,41 +1,76 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  mainContainer: {
+  // Layouts
+  screenBase: {
     flex: 1,
     padding: 20,
     backgroundColor: "blanchedalmond",
   },
-  centeredContainer: {
+  screenCentered: {
     flex: 1,
     justifyContent: "center",
+    padding: 20,
+    backgroundColor: "blanchedalmond",
   },
-  headingContainer: {
-    alignItems: "center",
-    marginBottom: 80,
-  },
-  bigHeadingText: {
+
+  // Headings
+  headingXL: {
     fontSize: 65,
     fontWeight: "bold",
     color: "saddlebrown",
     letterSpacing: 3,
   },
-  smallHeadingText: {
+  headingL: {
     fontSize: 40,
     fontWeight: "bold",
     color: "saddlebrown",
     letterSpacing: 2,
   },
-  subHeadingText: {
+  headingM: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "saddlebrown",
+  },
+
+  // Subheadings
+  subheadingL: {
     fontSize: 18,
     color: "sienna",
     marginTop: 4,
     letterSpacing: 1,
   },
-  inputContainer: {
-    marginBottom: 20,
+  subheadingM: {
+    fontSize: 15,
+    color: "sienna",
+    marginTop: 2,
+    letterSpacing: 0.5,
   },
-  inputBox: {
+
+  // Labels
+  textLabelXL: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 12,
+  },
+  textLabelL: {
+    fontSize: 17,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  textLabelM: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  textLabelS: {
+    fontSize: 13,
+    fontWeight: "bold",
+    marginBottom: 6,
+  },
+
+  // Inputs
+  inputField: {
     borderColor: "black",
     borderWidth: 2,
     fontSize: 18,
@@ -43,18 +78,30 @@ export default StyleSheet.create({
     padding: 15,
     backgroundColor: "oldlace",
   },
-  titleText: {
-    fontSize: 17,
-    fontWeight: "bold",
-    marginBottom: 10,
+  inputWrapper: {
+    marginBottom: 20,
   },
-  warningText: {
+
+  // Warnings
+  errorText: {
     fontSize: 15,
     color: "red",
     marginTop: 4,
   },
-  buttonContainer: {
-    marginTop: 20,
-    marginBottom: 80,
+
+  // Alignments
+  alignCenter: {
+    alignItems: "center",
+  },
+
+  // Spacers
+  spacerS: {
+    marginBottom: 10,
+  },
+  spacerM: {
+    marginBottom: 20,
+  },
+  spacerL: {
+    marginBottom: 40,
   },
 });
