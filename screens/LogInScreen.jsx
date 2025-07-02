@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     borderRadius: 10,
     padding: 15,
-    backgroundColor: "ivory",
+    backgroundColor: "oldlace",
   },
   titleText: {
     fontSize: 17,
