@@ -10,7 +10,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.button}>
-        <Button title="Bean Entry Screen" onPress={() => navigation.navigate("BeanEntry")} />
+        <Button title="Bean Library Screen" onPress={() => navigation.navigate("BeanLibrary")} />
       </View>
 
       <View style={styles.button}>
