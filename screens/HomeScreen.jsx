@@ -36,6 +36,10 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.button}>
         <Button title="Create Account Screen" onPress={() => navigation.navigate("CreateAccount")} />
       </View>
+
+      <View style={styles.button}>
+        <Button title="Component Testing Screen" onPress={() => navigation.navigate("ComponentTesting")} />
+      </View>
     </View>
   );
 };
