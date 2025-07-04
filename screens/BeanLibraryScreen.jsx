@@ -28,7 +28,7 @@ const BeanLibraryScreen = () => {
 
       <View style={global.spacerL} />
 
-      {/* Message for Empty Lists */}
+      {/* Message for empty lists */}
       {dummyBeans.length === 0 ? (
         <View style={global.alignCenter}>
           <View style={global.spacerXL} />
@@ -38,7 +38,7 @@ const BeanLibraryScreen = () => {
           <Text style={global.subheadingL}>Tap “+” to add your first one!</Text>
         </View>
       ) : (
-        // BeanCard List
+        // BeanCard list
         <FlatList
           data={dummyBeans}
           keyExtractor={(item) => item.id}

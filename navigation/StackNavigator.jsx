@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LogInScreen from "../screens/LogInScreen";
 import HomeScreen from "../screens/HomeScreen";
+import BeanEntryScreen from "../screens/BeanEntryScreen";
 import BeanLibraryScreen from "../screens/BeanLibraryScreen";
 import BrewEntryScreen from "../screens/BrewEntryScreen";
 import BrewHistoryScreen from "../screens/BrewHistoryScreen";
@@ -20,6 +21,7 @@ const StackNavigator = () => {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BeanEntry" component={BeanEntryScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BeanLibrary" component={BeanLibraryScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BrewEntry" component={BrewEntryScreen} />
         <Stack.Screen name="BrewHistory" component={BrewHistoryScreen} />
