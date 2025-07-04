@@ -32,6 +32,11 @@ export default StyleSheet.create({
     fontWeight: "bold",
     color: "saddlebrown",
   },
+  headingS: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "saddlebrown",
+  },
 
   // Subheadings
   subheadingL: {
