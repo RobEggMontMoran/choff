@@ -1,28 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import global from "../styles/globalStyles";
-import { FontAwesome } from "@expo/vector-icons";
-
-// Star rendering function
-const renderStars = (rating) => {
-  const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.25 && rating % 1 < 0.75;
-  const totalStars = hasHalfStar ? fullStars + 1 : fullStars;
-  const emptyStars = 10 - totalStars;
-
-  // Render stars: full, optional half, then empty — total of 10
-  for (let i = 0; i < fullStars; i++) {
-    stars.push(<FontAwesome key={`full-${i}`} name="star" size={14} color="goldenrod" />);
-  }
-  if (hasHalfStar) {
-    stars.push(<FontAwesome key="half" name="star-half-full" size={14} color="goldenrod" />);
-  }
-  for (let i = 0; i < emptyStars; i++) {
-    stars.push(<FontAwesome key={`empty-${i}`} name="star-o" size={14} color="goldenrod" />);
-  }
-
-  return <View style={local.starRow}>{stars}</View>;
-};
+import StarRating from "./StarRating";
 
 // Card rendering function
 const BeanCard = ({ bean, onPress }) => {
@@ -35,7 +13,7 @@ const BeanCard = ({ bean, onPress }) => {
           <Text style={global.subheadingM}>{bean.roaster}</Text>
           <Text style={global.subheadingM}>Origin: {bean.origin}</Text>
           <View style={local.ratingRow}>
-            {renderStars(bean.rating)}
+            <StarRating rating={bean.rating} />
             <Text style={global.subheadingM}>({bean.rating.toFixed(1)})</Text>
           </View>
         </View>
@@ -54,11 +32,6 @@ const local = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     backgroundColor: "oldlace",
-  },
-  starRow: {
-    flexDirection: "row",
-    marginVertical: 1,
-    marginTop: 6,
   },
   contentRow: {
     flexDirection: "row",
