@@ -23,7 +23,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BeanEntry" component={BeanEntryScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BeanLibrary" component={BeanLibraryScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BrewEntry" component={BrewEntryScreen} />
+        <Stack.Screen name="BrewEntry" component={BrewEntryScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BrewHistory" component={BrewHistoryScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Analytics" component={AnalyticsScreen} />

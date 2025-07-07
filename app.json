@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Choff",
+    "name": "Choff", // Other Options - 9Bar, 9Bars,
     "slug": "choff",
     "version": "1.0.0",
     "orientation": "portrait",

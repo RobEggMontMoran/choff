@@ -23,6 +23,7 @@ const BeanEntryScreen = () => {
   const [roastDate, setRoastDate] = useState("");
   const [roastType, setRoastType] = useState("");
   const [rating, setRating] = useState("");
+  const [photo, setPhoto] = useState("");
 
   const handleSave = () => {
     // Placeholder logic — later save to Firebase
@@ -33,6 +34,7 @@ const BeanEntryScreen = () => {
       roastDate,
       roastType,
       rating,
+      //   photoUrl,
     });
     navigation.goBack(); // Placeholder - back to HomeScreen
   };
@@ -81,22 +83,22 @@ const BeanEntryScreen = () => {
               </View>
 
               <View style={global.inputWrapper}>
-                <Text style={global.textLabelL}>Roast Date</Text>
-                <TextInput
-                  style={global.inputField}
-                  placeholder="DD-MM-YYYY"
-                  value={roastDate}
-                  onChangeText={setRoastDate}
-                />
-              </View>
-
-              <View style={global.inputWrapper}>
                 <Text style={global.textLabelL}>Roast Type</Text>
                 <TextInput
                   style={global.inputField}
                   placeholder="Light / Medium / Dark"
                   value={roastType}
                   onChangeText={setRoastType}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roast Date</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="DD-MM-YYYY"
+                  value={roastDate}
+                  onChangeText={setRoastDate}
                 />
               </View>
 
@@ -108,6 +110,16 @@ const BeanEntryScreen = () => {
                   keyboardType="numeric"
                   value={rating}
                   onChangeText={setRating}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Image</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="Select a photo from Gallery"
+                  value={photo}
+                  onChangeText={setPhoto}
                 />
               </View>
 
