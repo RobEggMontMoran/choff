@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import global from "../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 
@@ -27,103 +38,143 @@ const BeanEntryScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* Input fields */}
-      <ScrollView contentContainerStyle={local.scrollContent}>
-        <View style={global.alignCenter}>
-          <Text style={global.headingL}>Add New Bean</Text>
-          <Text style={global.subheadingM}>Log your Espresso Bean Details</Text>
-        </View>
+    <View style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "android" ? "height" : "padding"}
+        keyboardVerticalOffset={10}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View>
+            {/* Input fields */}
+            <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
+              <View style={global.alignCenter}>
+                <Text style={global.headingL}>Add New Bean</Text>
+                <Text style={global.subheadingM}>Log your Espresso Bean Details</Text>
+              </View>
 
-        <View style={global.spacerL} />
+              <View style={global.spacerL} />
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Bean Name</Text>
-          <TextInput style={global.inputField} placeholder="e.g. Mamba" value={beanName} onChangeText={setBeanName} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Bean Name</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. Mamba"
+                  value={beanName}
+                  onChangeText={setBeanName}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Roaster</Text>
-          <TextInput style={global.inputField} placeholder="e.g. 3FE" value={roaster} onChangeText={setRoaster} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roaster</Text>
+                <TextInput style={global.inputField} placeholder="e.g. 3FE" value={roaster} onChangeText={setRoaster} />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Origin</Text>
-          <TextInput style={global.inputField} placeholder="e.g. Brazil" value={origin} onChangeText={setOrigin} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Origin</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. Brazil"
+                  value={origin}
+                  onChangeText={setOrigin}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Roast Date</Text>
-          <TextInput style={global.inputField} placeholder="DD-MM-YYYY" value={roastDate} onChangeText={setRoastDate} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roast Date</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="DD-MM-YYYY"
+                  value={roastDate}
+                  onChangeText={setRoastDate}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Roast Type</Text>
-          <TextInput
-            style={global.inputField}
-            placeholder="Light / Medium / Dark"
-            value={roastType}
-            onChangeText={setRoastType}
-          />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roast Type</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="Light / Medium / Dark"
+                  value={roastType}
+                  onChangeText={setRoastType}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Rating (1-10)</Text>
-          <TextInput
-            style={global.inputField}
-            placeholder="e.g. 8.5"
-            keyboardType="numeric"
-            value={rating}
-            onChangeText={setRating}
-          />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Rating (1-10)</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 8.5"
+                  keyboardType="numeric"
+                  value={rating}
+                  onChangeText={setRating}
+                />
+              </View>
 
-        {/* Duplicating fields for scroll testing */}
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Bean Name</Text>
-          <TextInput style={global.inputField} placeholder="e.g. Mamba" value={beanName} onChangeText={setBeanName} />
-        </View>
+              {/* Duplicating fields for scroll testing
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Bean Name</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. Mamba"
+                  value={beanName}
+                  onChangeText={setBeanName}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Roaster</Text>
-          <TextInput style={global.inputField} placeholder="e.g. 3FE" value={roaster} onChangeText={setRoaster} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roaster</Text>
+                <TextInput style={global.inputField} placeholder="e.g. 3FE" value={roaster} onChangeText={setRoaster} />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Origin</Text>
-          <TextInput style={global.inputField} placeholder="e.g. Brazil" value={origin} onChangeText={setOrigin} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Origin</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. Brazil"
+                  value={origin}
+                  onChangeText={setOrigin}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Roast Date</Text>
-          <TextInput style={global.inputField} placeholder="DD-MM-YYYY" value={roastDate} onChangeText={setRoastDate} />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roast Date</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="DD-MM-YYYY"
+                  value={roastDate}
+                  onChangeText={setRoastDate}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Roast Type</Text>
-          <TextInput
-            style={global.inputField}
-            placeholder="Light / Medium / Dark"
-            value={roastType}
-            onChangeText={setRoastType}
-          />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Roast Type</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="Light / Medium / Dark"
+                  value={roastType}
+                  onChangeText={setRoastType}
+                />
+              </View>
 
-        <View style={global.inputWrapper}>
-          <Text style={global.textLabelL}>Rating (1-10)</Text>
-          <TextInput
-            style={global.inputField}
-            placeholder="e.g. 8.5"
-            keyboardType="numeric"
-            value={rating}
-            onChangeText={setRating}
-          />
-        </View>
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Rating (1-10)</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 8.5"
+                  keyboardType="numeric"
+                  value={rating}
+                  onChangeText={setRating}
+                />
+              </View> */}
 
-        <View style={local.buttonSpacing}>
-          <Button title="Save Bean" onPress={handleSave} color="peru" />
-        </View>
-      </ScrollView>
+              <View style={local.buttonSpacing}>
+                <Button title="Save Bean" onPress={handleSave} color="peru" />
+              </View>
+            </ScrollView>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -132,6 +183,7 @@ const local = StyleSheet.create({
   scrollContent: {
     padding: 20,
     backgroundColor: "blanchedalmond",
+    flexGrow: 1,
   },
   buttonSpacing: {
     marginTop: 20,
