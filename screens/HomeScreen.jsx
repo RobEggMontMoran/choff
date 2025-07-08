@@ -1,68 +1,114 @@
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import global from "../styles/globalStyles";
+import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
-const HomeScreen = ({ navigation }) => {
+import dummyBeans from "../data/dummyBeans";
+import dummyBrews from "../data/dummyBrews";
+
+const HomeScreen = () => {
+  const navigation = useNavigation();
+
+  const totalBeans = dummyBeans.length;
+  const totalBrews = dummyBrews.length;
+
   return (
-    <View>
-      <Text style={styles.text}>Home Screen</Text>
+    <SafeAreaView style={global.screenBase}>
+      <View style={{ flex: 1 }}>
+        <View style={global.alignCenter}>
+          <Text style={global.headingL}>Coffee Cupboard</Text>
+          <Text style={global.subheadingM}>Brew smarter, not harder ☕️</Text>
+        </View>
 
-      <View style={styles.topButton}>
-        <Button title="LogIn Screen" onPress={() => navigation.navigate("LogIn")} />
+        <View style={global.spacerM} />
+
+        {/* CTA
+      <TouchableOpacity style={local.ctaButton} onPress={() => navigation.navigate("BrewEntry")}>
+        <Text style={local.ctaText}>Start a New Brew</Text>
+      </TouchableOpacity>
+      <View style={global.spacerL} /> */}
+
+        {/* Stats Section */}
+        <View style={local.statsRow}>
+          <View style={local.statBox}>
+            <Text style={global.textLabelM}>Beans Logged</Text>
+            <Text style={global.headingM}>{totalBeans}</Text>
+          </View>
+
+          <View style={local.statBox}>
+            <Text style={global.textLabelM}>Brews Recorded</Text>
+            <Text style={global.headingM}>{totalBrews}</Text>
+          </View>
+        </View>
+
+        <View style={global.spacerL} />
       </View>
 
-      <View style={styles.button}>
-        <Button title="Bean Entry Screen" onPress={() => navigation.navigate("BeanEntry")} />
-      </View>
+      {/* Quick Links */}
+      <View style={local.footer}>
+        <TouchableOpacity style={local.quickLink} onPress={() => navigation.navigate("BeanLibrary")}>
+          <Ionicons name="book" size={30} color="saddlebrown" />
+          <Text style={global.subheadingM}>Beans</Text>
+        </TouchableOpacity>
 
-      <View style={styles.button}>
-        <Button title="Bean Library Screen" onPress={() => navigation.navigate("BeanLibrary")} />
-      </View>
+        <TouchableOpacity style={local.quickLink} onPress={() => navigation.navigate("BrewHistory")}>
+          <Ionicons name="cafe" size={30} color="saddlebrown" />
+          <Text style={global.subheadingM}>Brews</Text>
+        </TouchableOpacity>
 
-      <View style={styles.button}>
-        <Button title="Brew Entry Screen" onPress={() => navigation.navigate("BrewEntry")} />
+        <TouchableOpacity style={local.quickLink} onPress={() => navigation.navigate("Profile")}>
+          <Ionicons name="person" size={30} color="saddlebrown" />
+          <Text style={global.subheadingM}>Profile</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.button}>
-        <Button title="Brew History Screen" onPress={() => navigation.navigate("BrewHistory")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Profile Screen" onPress={() => navigation.navigate("Profile")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Settings Screen" onPress={() => navigation.navigate("Settings")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Analytics Screen" onPress={() => navigation.navigate("Analytics")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Create Account Screen" onPress={() => navigation.navigate("CreateAccount")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Component Testing Screen" onPress={() => navigation.navigate("ComponentTesting")} />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  text: {
-    fontWeight: "bold",
-    fontSize: 42,
-    textAlign: "center",
-    marginTop: 50,
+const local = StyleSheet.create({
+  // ctaButton: {
+  //   backgroundColor: "saddlebrown",
+  //   paddingVertical: 16,
+  //   paddingHorizontal: 30,
+  //   borderRadius: 12,
+  //   alignItems: "center",
+  // },
+  // ctaText: {
+  //   color: "white",
+  //   fontSize: 20,
+  //   fontWeight: "bold",
+  // },
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 20,
   },
-  button: {
-    marginVertical: 6,
-    marginHorizontal: 40,
+  statBox: {
+    flex: 1,
+    backgroundColor: "oldlace",
+    padding: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "saddlebrown",
   },
-  topButton: {
-    marginTop: 35,
-    marginVertical: 6,
-    marginHorizontal: 40,
+  // quickLinksRow: {
+  //   flexDirection: "row",
+  //   justifyContent: "space-evenly",
+  //   marginTop: 20,
+  // },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 8,
+    // borderTopWidth: 1,
+    borderWidth: 1,
+    borderColor: "saddlebrown",
+    backgroundColor: "oldlace",
+  },
+  quickLink: {
+    alignItems: "center",
   },
 });
 

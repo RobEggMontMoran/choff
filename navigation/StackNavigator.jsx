@@ -12,13 +12,14 @@ import AnalyticsScreen from "../screens/AnalyticsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import CreateAccountScreen from "../screens/CreateAccountScreen";
 import ComponentTestingScreen from "../screens/ComponentTestingScreen";
+import DevelopmentScreen from "../screens/DevelopmentScreen";
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Development">
         <Stack.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="BeanEntry" component={BeanEntryScreen} options={{ headerShown: false }} />
@@ -30,6 +31,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ComponentTesting" component={ComponentTestingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Development" component={DevelopmentScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
