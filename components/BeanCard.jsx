@@ -32,6 +32,7 @@ const local = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     backgroundColor: "oldlace",
+    marginBottom: 8,
   },
   contentRow: {
     flexDirection: "row",

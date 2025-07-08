@@ -9,6 +9,11 @@ const BrewCard = ({ brew, onPress }) => {
       <View style={local.contentRow}>
         {/* Left side of card - Brew Info */}
         <View style={local.textColumn}>
+          <Text style={global.headingS}>{brew.beanName}</Text>
+          <Text style={global.subheadingM}>
+            {brew.dose}g beans - {brew.yieldAmount}g espresso
+          </Text>
+          <Text style={global.subheadingM}>Date: {brew.date}</Text>
           <View style={local.ratingRow}>
             <StarRating rating={brew.rating} />
             <Text style={global.subheadingM}>({brew.rating.toFixed(1)})</Text>
@@ -29,6 +34,7 @@ const local = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     backgroundColor: "oldlace",
+    marginBottom: 8,
   },
   contentRow: {
     flexDirection: "row",
@@ -51,4 +57,4 @@ const local = StyleSheet.create({
   },
 });
 
-export default BeanCard;
+export default BrewCard;
