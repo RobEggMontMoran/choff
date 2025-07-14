@@ -6,10 +6,6 @@ const DevelopmentScreen = ({ navigation }) => {
       <Text style={styles.text}>Development Hub</Text>
 
       <View style={styles.topButton}>
-        <Button title="LogIn Screen" onPress={() => navigation.navigate("LogIn")} color={"green"} />
-      </View>
-
-      <View style={styles.button}>
         <Button title="Home Screen" onPress={() => navigation.navigate("Home")} color={"green"} />
       </View>
 
@@ -30,15 +26,7 @@ const DevelopmentScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.button}>
-        <Button title="Profile Screen" onPress={() => navigation.navigate("Profile")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Settings Screen" onPress={() => navigation.navigate("Settings")} />
-      </View>
-
-      <View style={styles.button}>
-        <Button title="Analytics Screen" onPress={() => navigation.navigate("Analytics")} />
+        <Button title="LogIn Screen" onPress={() => navigation.navigate("LogIn")} color={"green"} />
       </View>
 
       <View style={styles.button}>
@@ -51,6 +39,18 @@ const DevelopmentScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("ComponentTesting")}
           color={"green"}
         />
+      </View>
+
+      <View style={styles.button}>
+        <Button title="Profile Screen" onPress={() => navigation.navigate("Profile")} />
+      </View>
+
+      <View style={styles.button}>
+        <Button title="Settings Screen" onPress={() => navigation.navigate("Settings")} />
+      </View>
+
+      <View style={styles.button}>
+        <Button title="Analytics Screen" onPress={() => navigation.navigate("Analytics")} />
       </View>
     </View>
   );

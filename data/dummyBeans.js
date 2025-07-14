@@ -2,27 +2,27 @@ const dummyBeans = [
   {
     // Mandatory fields
     id: "1",
-    name: "Mamba",
-    roaster: "3FE",
-    blend: "Single Origin",
-    origin: "Ethiopia",
+    name: "Mamba", // TextBox
+    roaster: "3FE", // TextBox
+    blend: "Single Origin", // Dropdown
+    origin: "Ethiopia", // Dropdown?
 
     // Add granularity here if not single origin
     // [
     //   { country: "Ethiopia", percentage: 60 },
     //   { country: "Brazil", percentage: 40 },
     // ],
-    roastType: "Dark",
-    roastDate: "2024-05-20",
-    rating: 9.5,
+    roastType: "Dark", // Dropdown
+    roastDate: "2024-05-20", // Calendar
+    rating: 9.5, // Slider
 
     // Optional fields
-    processMethod: "Washed",
-    bagSize: 500,
-    price: 24.99,
-    isDecaf: false,
-    flavourProfile: ["fruity", "nutty"],
-    userNotes: "Apple and plum notes, with a nutty finish - like cashews. Best drank as espresso",
+    processMethod: "Washed", // Dropdown
+    bagSize: 500, // Slider
+    price: 24.99, // Slider
+    isDecaf: false, // Box
+    flavourProfile: ["fruity", "nutty"], // Dowpdown/ Tags
+    userNotes: "Apple and plum notes, with a nutty finish - like cashews. Best drank as espresso", // TextBox
     photoUrl: "",
   },
   {

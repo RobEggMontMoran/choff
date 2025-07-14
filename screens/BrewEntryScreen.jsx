@@ -25,8 +25,13 @@ const BrewEntryScreen = () => {
   const [temperature, setTemperature] = useState("");
   // const [method, setMethod] = useState("");
   const [grindSize, setGrindSize] = useState("");
+  const [aromaRating, setAromaRating] = useState(0);
+  const [sweetnessRating, setSweetnessRating] = useState(0);
+  const [acidityRating, setAcidityRating] = useState(0);
+  const [bitternessRating, setBitternessRating] = useState(0);
+  const [bodyRating, setBodyRating] = useState(0);
+  const [overallRating, setOverallRating] = useState(0);
   const [notes, setNotes] = useState("");
-  const [rating, setRating] = useState(0);
 
   const handleSave = () => {
     // Placeholder logic — later save to Firebase
@@ -38,8 +43,13 @@ const BrewEntryScreen = () => {
       temperature,
       // method,
       grindSize,
+      aromaRating,
+      sweetnessRating,
+      acidityRating,
+      bitternessRating,
+      bodyRating,
+      overallRating,
       notes,
-      rating,
     });
     navigation.goBack(); // Placeholder - back to HomeScreen
   };
@@ -66,6 +76,7 @@ const BrewEntryScreen = () => {
 
               <View style={global.spacerL} />
 
+              {/* Brewing Measurements */}
               <View style={global.inputWrapper}>
                 <Text style={global.textLabelL}>Coffee Beans</Text>
                 <TextInput
@@ -140,6 +151,73 @@ const BrewEntryScreen = () => {
                 />
               </View>
 
+              {/* Reflection */}
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Aroma</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 1-10"
+                  keyboardType="numeric"
+                  value={aromaRating}
+                  onChangeText={setAromaRating}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Sweetness</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 1-10"
+                  keyboardType="numeric"
+                  value={sweetnessRating}
+                  onChangeText={setSweetnessRating}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Acidity</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 1-10"
+                  keyboardType="numeric"
+                  value={acidityRating}
+                  onChangeText={setAcidityRating}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Bitterness</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 1-10"
+                  keyboardType="numeric"
+                  value={bitternessRating}
+                  onChangeText={setBitternessRating}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Body</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 1-10"
+                  keyboardType="numeric"
+                  value={bodyRating}
+                  onChangeText={setBodyRating}
+                />
+              </View>
+
+              <View style={global.inputWrapper}>
+                <Text style={global.textLabelL}>Overall Rating (1-10)</Text>
+                <TextInput
+                  style={global.inputField}
+                  placeholder="e.g. 8.5"
+                  keyboardType="numeric"
+                  value={overallRating}
+                  onChangeText={setOverallRating}
+                />
+              </View>
+
               <View style={global.inputWrapper}>
                 <Text style={global.textLabelL}>Notes</Text>
                 <TextInput
@@ -148,17 +226,6 @@ const BrewEntryScreen = () => {
                   multiline
                   value={notes}
                   onChangeText={setNotes}
-                />
-              </View>
-
-              <View style={global.inputWrapper}>
-                <Text style={global.textLabelL}>Rating (1-10)</Text>
-                <TextInput
-                  style={global.inputField}
-                  placeholder="e.g. 8.5"
-                  keyboardType="numeric"
-                  value={rating}
-                  onChangeText={setRating}
                 />
               </View>
 

@@ -1,15 +1,15 @@
 const dummyBrews = [
   {
     id: "1",
-    beanName: "Mamba",
-    dose: 18.5,
-    yieldAmount: 36,
-    brewTime: 27,
-    temperature: 94,
-    grindSize: 5,
-    notes: "Balanced shot. Plum and nut notes come through well at this ratio.",
-    date: "2025-07-08",
-    rating: 9.5,
+    beanName: "Mamba", // Dropdown (Beans stored in DB)
+    dose: 18.5, // Slider
+    yieldAmount: 36, // Slider
+    brewTime: 27, // Slider
+    temperature: 94, // Slider
+    grindSize: 5, // Slider
+    notes: "Balanced shot. Plum and nut notes come through well at this ratio.", // TextBox
+    date: "2025-07-08", // Calendar
+    rating: 9.5, // Slider
   },
   {
     id: "2",
@@ -118,6 +118,30 @@ const dummyBrews = [
     notes: "Sweet spot found with this ratio. Crisp acidity and floral aroma.",
     date: "2025-07-01",
     rating: 7.5,
+  },
+  {
+    id: "11",
+    beanName: "Roaster's Reserve",
+    dose: 19.5,
+    yieldAmount: 40,
+    brewTime: 30,
+    temperature: 95,
+    grindSize: 4,
+    notes: "Smooth mouthfeel. Blackcurrant and molasses. Perfect.",
+    date: "2025-07-02",
+    rating: 9,
+  },
+  {
+    id: "12",
+    beanName: "Seasonal Espresso",
+    dose: 19,
+    yieldAmount: 38,
+    brewTime: 27,
+    temperature: 94,
+    grindSize: 5,
+    notes: "Could be better. Bitter aftertaste.",
+    date: "2025-07-01",
+    rating: 8,
   },
 ];
 
