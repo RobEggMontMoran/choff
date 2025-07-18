@@ -1,8 +1,11 @@
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import global from "../styles/globalStyles";
 
 const LogInScreen = () => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -49,6 +52,10 @@ const LogInScreen = () => {
       <View style={local.buttonMargin}>
         <Button title="Log In" onPress={() => console.log("Logging in...")} color="peru" />
       </View>
+
+      <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")}>
+        <Text style={{ color: "saddlebrown", textAlign: "center", marginBottom: 50 }}>Create Account</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -56,7 +63,7 @@ const LogInScreen = () => {
 const local = StyleSheet.create({
   buttonMargin: {
     marginTop: 20,
-    marginBottom: 80,
+    marginBottom: 20,
   },
 });
 

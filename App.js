@@ -19,7 +19,7 @@ export default App;
 // import { StatusBar } from "expo-status-bar";
 // import StackNavigator from "./navigation/StackNavigator";
 // import { collection, addDoc } from "firebase/firestore";
-// import db from "./firestore";
+// import db from "./src/firebase/firestore";
 
 // const App = () => {
 //   useEffect(() => {

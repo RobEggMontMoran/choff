@@ -1,13 +1,44 @@
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import global from "../styles/globalStyles";
+import { registerUser } from "../src/firebase/auth";
 
 const CreateAccountScreen = () => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // loading state
 
   const passwordsDoNotMatch = password !== "" && confirmPassword !== "" && password !== confirmPassword;
+
+  // Sign-up function
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      return Alert.alert("Error", "Please fill in all fields.");
+    }
+
+    if (passwordsDoNotMatch) {
+      return Alert.alert("Error", "Passwords do not match.");
+    }
+
+    if (password.length < 6) {
+      return Alert.alert("Error", "Password must be at least 6 characters.");
+    }
+
+    try {
+      setIsSubmitting(true);
+      await registerUser(email, password);
+      Alert.alert("Success", "Account created!");
+      navigation.replace("Home");
+    } catch (err) {
+      Alert.alert("Signup Failed", err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <View style={global.screenCentered}>
@@ -69,8 +100,18 @@ const CreateAccountScreen = () => {
 
       {/* Submit Button */}
       <View style={local.buttonSpacing}>
-        <Button title="Create Account" onPress={() => console.log("Creating account...")} color="peru" />
+        <Button
+          // title="Create Account"
+          title={isSubmitting ? "Creating..." : "Create Account"}
+          onPress={handleSignUp}
+          color="peru"
+          disabled={isSubmitting} // prevent double taps from occuring
+        />
       </View>
+
+      <TouchableOpacity onPress={() => navigation.navigate("LogIn")}>
+        <Text style={{ color: "saddlebrown", textAlign: "center", marginBottom: 50 }}>Back to Log-in Screen</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -78,7 +119,7 @@ const CreateAccountScreen = () => {
 const local = StyleSheet.create({
   buttonSpacing: {
     marginTop: 20,
-    marginBottom: 80,
+    marginBottom: 20,
   },
 });
 
