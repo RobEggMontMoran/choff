@@ -32,7 +32,7 @@ const CreateAccountScreen = () => {
       setIsSubmitting(true);
       await registerUser(email, password);
       Alert.alert("Success", "Account created!");
-      navigation.replace("Home");
+      // onAuthStateChanged listener in StackNavigator handles routing
     } catch (err) {
       Alert.alert("Signup Failed", err.message);
     } finally {
@@ -101,7 +101,6 @@ const CreateAccountScreen = () => {
       {/* Submit Button */}
       <View style={local.buttonSpacing}>
         <Button
-          // title="Create Account"
           title={isSubmitting ? "Creating..." : "Create Account"}
           onPress={handleSignUp}
           color="peru"
