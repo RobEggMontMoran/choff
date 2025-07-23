@@ -1,12 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import StackNavigator from "./navigation/StackNavigator";
+import { Provider as PaperProvider } from "react-native-paper"; // provider for react native paper
 
 const App = () => {
   return (
-    <>
+    // entire app wrapped in provider
+    <PaperProvider>
       <StatusBar style="auto" />
       <StackNavigator />
-    </>
+    </PaperProvider>
   );
 };
 

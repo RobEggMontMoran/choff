@@ -11,12 +11,12 @@ const BeanLibraryScreen = () => {
 
   // Card navigation
   const handleCardPress = (bean) => {
-    navigation.navigate("ComponentTesting", { bean }); // placeholder
+    navigation.navigate("BeanEntry", { bean }); // placeholder
   };
 
   // Add Bean navigation
   const handleAddPress = () => {
-    navigation.navigate("ComponentTesting", { mode: "add" }); // placeholder
+    navigation.navigate("BeanEntry", { mode: "add" }); // placeholder
   };
 
   return (
