@@ -1,15 +1,24 @@
 const dummyBrews = [
   {
+    // Mandatory fields
     id: "1",
     beanName: "Mamba", // Dropdown (Beans stored in DB)
-    dose: 18.5, // Slider
-    yieldAmount: 36, // Slider
-    brewTime: 27, // Slider
-    temperature: 94, // Slider
-    grindSize: 5, // Slider
+    // When recording new brew from the same beans, defaults to last saved measurements for that bean
+    dose: 18.5, // Slider - First brew recorded for the beans defaults to 18
+    yieldAmount: 36, // Slider - First brew recorded for the beans defaults to 36
+    brewTime: 27, // Slider - First brew recorded for the beans defaults to 28
+    temperature: 94, // Slider - First brew recorded for the beans defaults to 92
+    grindSize: 5, // Slider - First brew recorded for the beans defaults to 7
+    rating: 9.5, // Slider - defaults to 5
+    date: "2025-07-08", // Calendar - defaults to today's date
+
+    // Optional Fields
+    aroma: 5, // Slider - defaults to 5
+    sweetness: 5, // Slider - defaults to 5
+    acidity: 5, // Slider - defaults to 5
+    bitterness: 5, // Slider - defaults to 5
+    body: 5, // Slider - defaults to 5
     notes: "Balanced shot. Plum and nut notes come through well at this ratio.", // TextBox
-    date: "2025-07-08", // Calendar
-    rating: 9.5, // Slider
   },
   {
     id: "2",

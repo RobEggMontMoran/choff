@@ -11,12 +11,12 @@ const BrewHistoryScreen = () => {
 
   // Card navigation
   const handleCardPress = (brew) => {
-    navigation.navigate("ComponentTesting", { brew }); // placeholder
+    navigation.navigate("Development", { brew }); // placeholder
   };
 
   // Add Brew navigation
   const handleAddPress = () => {
-    navigation.navigate("ComponentTesting", { mode: "addBrew" }); // placeholder
+    navigation.navigate("BrewEntry", { mode: "addBrew" }); // placeholder
   };
 
   return (
