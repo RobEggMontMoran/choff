@@ -1,4 +1,4 @@
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import db from "./firestore";
 import { auth } from "./auth";
 
@@ -19,13 +19,42 @@ export const addBean = async (beanData) => {
     // 'addDoc' - creates a new document with a unique ID
     await addDoc(collection(db, "beans"), {
       ...beanData, // The data from the BeanEntryScreen form
-      userId: user.uid, // Tag the document with the user's ID
-      createdAt: serverTimestamp(), // Add a timestamp
+      userId: user.uid, // Tags the document with the user's ID
+      createdAt: serverTimestamp(), // Adds a timestamp
     });
     console.log("Bean successfully saved to Firestore!");
   } catch (error) {
     console.error("Error saving bean to Firestore: ", error);
-    // Re-throw the error to screen as an alert
+    // Re-throws the error to screen as an alert
+    throw error;
+  }
+};
+
+/**
+ * Fetches all bean documents from Firestore for the current user.
+ * @returns {Promise<Array>} A promise that resolves with an array of bean objects.
+ */
+export const getBeans = async () => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("No user is currently logged in.");
+  }
+
+  const beans = [];
+  try {
+    // Creates a query against the 'beans' collection where the userId matches the current user's.
+    const q = query(collection(db, "beans"), where("userId", "==", user.uid));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // For each document, pushs its data and its unique ID into the array.
+      beans.push({ id: doc.id, ...doc.data() });
+    });
+
+    console.log("Beans successfully fetched!");
+    return beans;
+  } catch (error) {
+    console.error("Error fetching beans from Firestore: ", error);
     throw error;
   }
 };

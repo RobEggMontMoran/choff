@@ -21,7 +21,7 @@ const BeanEntryScreen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
   // Mandatory fields
-  const [beanName, setBeanName] = useState("");
+  const [name, setName] = useState("");
   const [roaster, setRoaster] = useState("");
   const [origin, setOrigin] = useState("");
   const [roastType, setRoastType] = useState("");
@@ -54,8 +54,11 @@ const BeanEntryScreen = () => {
   // Updated handleSave function to be async and call our Firestore function
   const handleSave = async () => {
     // Basic validation to ensure mandatory fields are filled
-    if (!beanName || !roaster || !roastType) {
-      Alert.alert("Missing Details", "Please fill in all mandatory fields (Bean Name, Roaster, and Roast Type).");
+    if (!name || !roaster || !origin || !rating) {
+      Alert.alert(
+        "Missing Details",
+        "Please fill in all mandatory fields (Bean Name, Roaster, and Origin and Overall Rating).",
+      );
       return;
     }
 
@@ -63,13 +66,13 @@ const BeanEntryScreen = () => {
 
     const beanData = {
       // Mandatory fields
-      beanName,
+      name,
       roaster,
-      roastType,
-
-      // Optional fields
       origin,
       rating: parseFloat(rating.toFixed(1)),
+
+      // Optional fields
+      roastType,
       blend,
       roastDate,
       processMethod,
@@ -93,28 +96,6 @@ const BeanEntryScreen = () => {
     }
   };
 
-  // const handleSave = () => {
-  //   const beanData = {
-  //     beanName,
-  //     roaster,
-  //     origin,
-  //     roastType,
-  //     rating: parseFloat(rating.toFixed(1)),
-
-  //     blend,
-  //     roastDate,
-  //     processMethod,
-  //     bagSize,
-  //     price: parseFloat(price.toFixed(2)),
-  //     isDecaf,
-  //     flavourProfile,
-  //     userNotes,
-  //     photoUrl,
-  //   };
-  //   console.log("Saving Bean Data:", beanData);
-  //   navigation.goBack();
-  // };
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -126,17 +107,13 @@ const BeanEntryScreen = () => {
             </View>
             <View style={global.spacerM} />
 
+            {/* Mandatory Inputs */}
             <Card style={local.card}>
               <Card.Content>
                 <Text style={local.cardTitle}>Mandatory Details</Text>
 
-                <TextInput
-                  label="Bean Name"
-                  value={beanName}
-                  onChangeText={setBeanName}
-                  style={local.input}
-                  mode="outlined"
-                />
+                <TextInput label="Bean Name" value={name} onChangeText={setName} style={local.input} mode="outlined" />
+
                 <TextInput
                   label="Roaster"
                   value={roaster}
@@ -145,6 +122,28 @@ const BeanEntryScreen = () => {
                   mode="outlined"
                 />
                 <TextInput label="Origin" value={origin} onChangeText={setOrigin} style={local.input} mode="outlined" />
+
+                <View style={local.input}>
+                  <Text style={local.sliderLabel}>Rating: {rating.toFixed(1)} / 10</Text>
+                  <Slider
+                    style={{ width: "100%", height: 40 }}
+                    minimumValue={0}
+                    maximumValue={10}
+                    step={0.5}
+                    value={rating}
+                    onValueChange={setRating}
+                    minimumTrackTintColor="peru"
+                    maximumTrackTintColor="#000000"
+                    thumbTintColor="peru"
+                  />
+                </View>
+              </Card.Content>
+            </Card>
+
+            {/* Optional Inputs */}
+            <Card style={local.card}>
+              <Card.Content>
+                <Text style={local.cardTitle}>Optional Details</Text>
 
                 <Menu
                   visible={roastMenuVisible}
@@ -184,27 +183,6 @@ const BeanEntryScreen = () => {
                     title="Dark"
                   />
                 </Menu>
-
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Rating: {rating.toFixed(1)} / 10</Text>
-                  <Slider
-                    style={{ width: "100%", height: 40 }}
-                    minimumValue={0}
-                    maximumValue={10}
-                    step={0.5}
-                    value={rating}
-                    onValueChange={setRating}
-                    minimumTrackTintColor="peru"
-                    maximumTrackTintColor="#000000"
-                    thumbTintColor="peru"
-                  />
-                </View>
-              </Card.Content>
-            </Card>
-
-            <Card style={local.card}>
-              <Card.Content>
-                <Text style={local.cardTitle}>Optional Details</Text>
 
                 <Menu
                   visible={blendMenuVisible}
