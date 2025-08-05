@@ -9,42 +9,47 @@ import {
   Keyboard,
   Alert,
 } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, TextInput, Button, Menu, Card, List } from "react-native-paper";
 import Slider from "@react-native-community/slider";
 import global from "../styles/globalStyles";
 import { getBeans } from "../src/firebase/beans";
-import { addBrew } from "../src/firebase/brews";
+import { addBrew, updateBrew, deleteBrew } from "../src/firebase/brews";
 
 const BrewEntryScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute(); // Hook to access route params
+  const existingBrew = route.params?.brew; // Check if a brew was passed
 
   // Menu visibility state
   const [beanMenuVisible, setBeanMenuVisible] = useState(false);
   const [optionalSectionExpanded, setOptionalSectionExpanded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // loading state
 
-  // Mandatory fields
-  // const [beanName, setBeanName] = useState("");
+  // Data state
   const [availableBeans, setAvailableBeans] = useState([]); // holds beans fetched from Firestore
-  const [selectedBean, setSelectedBean] = useState(null); // holds the full selected bean object
+  // Initialisde selectedBeam from existingBrew if present
+  const [selectedBean, setSelectedBean] = useState(
+    existingBrew ? { id: existingBrew.beanId, name: existingBrew.beanName, roaster: existingBrew.roaster } : null,
+  );
 
-  const [dose, setDose] = useState(18.0);
-  const [yieldAmount, setYieldAmount] = useState(36);
-  const [brewTime, setBrewTime] = useState(28);
-  const [temperature, setTemperature] = useState(92);
-  const [grindSize, setGrindSize] = useState(7);
-  const [rating, setRating] = useState(5);
-  const [date, setDate] = useState(new Date().toLocaleDateString("en-GB")); // Defaults to today's date
+  // Mandatory fields
+  const [dose, setDose] = useState(existingBrew?.dose || 8);
+  const [yieldAmount, setYieldAmount] = useState(existingBrew?.yieldAmount || 20);
+  const [brewTime, setBrewTime] = useState(existingBrew?.brewTime || 15);
+  const [temperature, setTemperature] = useState(existingBrew?.temperature || 85);
+  const [grindSize, setGrindSize] = useState(existingBrew?.grindSize || 1);
+  const [rating, setRating] = useState(existingBrew?.rating || 0);
+  const [date, setDate] = useState(existingBrew?.date || new Date().toLocaleDateString("en-GB")); // Defaults to today's date
 
   // Optional fields
-  const [aroma, setAroma] = useState(0);
-  const [acidity, setAcidity] = useState(0);
-  const [sweetness, setSweetness] = useState(0);
-  const [body, setBody] = useState(0);
-  const [bitterness, setBitterness] = useState(0);
-  const [notes, setNotes] = useState("");
+  const [aroma, setAroma] = useState(existingBrew?.tastingProfile?.aroma || 0);
+  const [acidity, setAcidity] = useState(existingBrew?.tastingProfile?.acidity || 0);
+  const [sweetness, setSweetness] = useState(existingBrew?.tastingProfile?.sweetness || 0);
+  const [body, setBody] = useState(existingBrew?.tastingProfile?.body || 0);
+  const [bitterness, setBitterness] = useState(existingBrew?.tastingProfile?.bitterness || 0);
+  const [notes, setNotes] = useState(existingBrew?.notes || "");
 
   // Fetch beans every time the screen comes into focus
   useFocusEffect(
@@ -61,9 +66,92 @@ const BrewEntryScreen = () => {
     }, []),
   );
 
-  // const handleSave = () => {
+  const handleSelectBean = (bean) => {
+    setSelectedBean(bean);
+    setBeanMenuVisible(false);
+  };
+
+  const getBrewDataFromState = () => ({
+    beanId: selectedBean.id,
+    beanName: selectedBean.name,
+    roaster: selectedBean.roaster,
+    dose: parseFloat(dose.toFixed(1)),
+    yieldAmount: parseFloat(yieldAmount.toFixed(1)),
+    brewTime: parseFloat(brewTime.toFixed(1)),
+    temperature: parseFloat(temperature.toFixed(1)),
+    grindSize,
+    rating: parseFloat(rating.toFixed(1)),
+    date,
+    tastingProfile: { aroma, acidity, sweetness, body, bitterness },
+    notes,
+  });
+
+  const handleAdd = async () => {
+    if (!selectedBean) {
+      Alert.alert("No Bean Selected", "Please select a bean for this brew.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await addBrew(getBrewDataFromState());
+      Alert.alert("Success!", "Your brew has been saved.");
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert("Error", "Could not save brew.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!existingBrew?.id) return;
+    setIsSubmitting(true);
+    try {
+      await updateBrew(existingBrew.id, getBrewDataFromState());
+      Alert.alert("Success!", "Your brew has been updated.");
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert("Error", "Could not update brew.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!existingBrew?.id) return;
+    Alert.alert("Delete Brew", "Are you sure you want to delete this brew? This action cannot be undone.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          setIsSubmitting(true);
+          try {
+            await deleteBrew(existingBrew.id);
+            Alert.alert("Deleted!", "Your brew has been deleted.");
+            navigation.goBack();
+          } catch (error) {
+            Alert.alert("Error", "Could not delete brew.");
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+      },
+    ]);
+  };
+
+  // const handleSave = async () => {
+  //   if (!selectedBean) {
+  //     Alert.alert("No Bean Selected", "Please select a bean for this brew.");
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
   //   const brewData = {
-  //     beanName,
+  //     beanId: selectedBean.id, // Store the ID of the bean
+  //     beanName: selectedBean.name, // Store the name (for easy display)
+  //     roaster: selectedBean.roaster,
   //     dose: parseFloat(dose.toFixed(1)),
   //     yieldAmount: parseFloat(yieldAmount.toFixed(1)),
   //     brewTime: parseFloat(brewTime.toFixed(1)),
@@ -71,59 +159,20 @@ const BrewEntryScreen = () => {
   //     grindSize,
   //     rating: parseFloat(rating.toFixed(1)),
   //     date,
-  //     tastingProfile: {
-  //       aroma,
-  //       acidity,
-  //       sweetness,
-  //       body,
-  //       bitterness,
-  //     },
+  //     tastingProfile: { aroma, acidity, sweetness, body, bitterness },
   //     notes,
   //   };
-  //   console.log("Saving Brew Data:", brewData);
-  //   navigation.goBack();
+  //   try {
+  //     await addBrew(brewData);
+  //     Alert.alert("Success!", "Your brew has been saved.");
+  //     navigation.goBack();
+  //   } catch (error) {
+  //     Alert.alert("Error", "Could not save brew. Please try again.");
+  //     console.error("Error in handleSave:", error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
   // };
-
-  const handleSelectBean = (bean) => {
-    setSelectedBean(bean);
-    setBeanMenuVisible(false);
-    // **NB - implement auto-fill measurements
-    // with the last used values for this bean.
-  };
-
-  const handleSave = async () => {
-    if (!selectedBean) {
-      Alert.alert("No Bean Selected", "Please select a bean for this brew.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const brewData = {
-      beanId: selectedBean.id, // Store the ID of the bean
-      beanName: selectedBean.name, // Store the name (for easy display)
-      roaster: selectedBean.roaster,
-      dose: parseFloat(dose.toFixed(1)),
-      yieldAmount: parseFloat(yieldAmount.toFixed(1)),
-      brewTime: parseFloat(brewTime.toFixed(1)),
-      temperature: parseFloat(temperature.toFixed(1)),
-      grindSize,
-      rating: parseFloat(rating.toFixed(1)),
-      date,
-      tastingProfile: { aroma, acidity, sweetness, body, bitterness },
-      notes,
-    };
-    try {
-      await addBrew(brewData);
-      Alert.alert("Success!", "Your brew has been saved.");
-      navigation.goBack();
-    } catch (error) {
-      Alert.alert("Error", "Could not save brew. Please try again.");
-      console.error("Error in handleSave:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
@@ -373,9 +422,34 @@ const BrewEntryScreen = () => {
 
             <View style={{ height: 20 }} />
 
-            <Button mode="contained" onPress={handleSave} style={local.button} buttonColor="peru">
-              Save Brew
-            </Button>
+            {existingBrew ? (
+              <View style={local.buttonRow}>
+                <Button
+                  mode="outlined"
+                  onPress={handleDelete}
+                  style={local.deleteButton}
+                  textColor="firebrick"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                >
+                  Delete
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={handleUpdate}
+                  style={local.updateButton}
+                  buttonColor="peru"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                >
+                  Update
+                </Button>
+              </View>
+            ) : (
+              <Button mode="contained" onPress={handleAdd} style={local.button} buttonColor="peru">
+                Save Brew
+              </Button>
+            )}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -420,6 +494,21 @@ const local = StyleSheet.create({
   accordionTitle: {
     color: "saddlebrown",
     fontWeight: "bold",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginBottom: 60,
+  },
+  deleteButton: {
+    flex: 1,
+    marginRight: 8,
+    borderColor: "firebrick",
+  },
+  updateButton: {
+    flex: 1,
+    marginLeft: 8,
   },
 });
 

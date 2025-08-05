@@ -34,10 +34,9 @@ const BrewHistoryScreen = () => {
     }, []),
   );
 
-  // Card navigation
+  // Card navigation - navigates to the BrewEntry screen and passes the brew data
   const handleCardPress = (brew) => {
-    console.log("Navigating to edit brew:", brew.id);
-    // navigation.navigate("Development", { brew }); // placeholder
+    navigation.navigate("BrewEntry", { brew });
   };
 
   // Add Brew navigation

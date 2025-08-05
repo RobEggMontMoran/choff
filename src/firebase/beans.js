@@ -13,9 +13,9 @@ import db from "./firestore";
 import { auth } from "./auth";
 
 /**
- * Adds a new bean document to Firestore for the current user.
- * @param {object} beanData - The bean data object from the form.
- * @returns {Promise<void>} A promise that resolves when the document is created.
+ * Adds a new bean document to Firestore for the current user
+ * @param {object} beanData - The bean data object from the form
+ * @returns {Promise<void>} A promise that resolves when the document is created
  */
 
 export const addBean = async (beanData) => {
@@ -40,8 +40,8 @@ export const addBean = async (beanData) => {
 };
 
 /**
- * Fetches all bean documents from Firestore for the current user.
- * @returns {Promise<Array>} A promise that resolves with an array of bean objects.
+ * Fetches all bean documents from Firestore for the current user
+ * @returns {Promise<Array>} A promise that resolves with an array of bean objects
  */
 export const getBeans = async () => {
   const user = auth.currentUser;
@@ -51,12 +51,12 @@ export const getBeans = async () => {
 
   const beans = [];
   try {
-    // Creates a query against the 'beans' collection where the userId matches the current user's.
+    // Creates a query against the 'beans' collection where the userId matches the current user's
     const q = query(collection(db, "beans"), where("userId", "==", user.uid));
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // For each document, pushs its data and its unique ID into the array.
+      // For each document, pushs its data and its unique ID into the array
       beans.push({ id: doc.id, ...doc.data() });
     });
 
@@ -69,9 +69,9 @@ export const getBeans = async () => {
 };
 
 /**
- * Updates an existing bean document in Firestore.
- * @param {string} beanId - The ID of the bean document to update.
- * @param {object} beanData - The updated bean data from the form.
+ * Updates an existing bean document in Firestore
+ * @param {string} beanId - The ID of the bean document to update
+ * @param {object} beanData - The updated bean data from the form
  * @returns {Promise<void>}
  */
 export const updateBean = async (beanId, beanData) => {
@@ -86,8 +86,8 @@ export const updateBean = async (beanId, beanData) => {
 };
 
 /**
- * Deletes a bean document from Firestore.
- * @param {string} beanId - The ID of the bean document to delete.
+ * Deletes a bean document from Firestore
+ * @param {string} beanId - The ID of the bean document to delete
  * @returns {Promise<void>}
  */
 export const deleteBean = async (beanId) => {

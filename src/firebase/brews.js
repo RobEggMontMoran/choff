@@ -1,11 +1,21 @@
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import db from "./firestore";
 import { auth } from "./auth";
 
 /**
- * Adds a new BREW document to Firestore for the current user.
- * @param {object} brewData - The brew data object from the form.
- * @returns {Promise<void>} A promise that resolves when the document is created.
+ * Adds a new BREW document to Firestore for the current user
+ * @param {object} brewData - The brew data object from the form
+ * @returns {Promise<void>} A promise that resolves when the document is created
  */
 export const addBrew = async (brewData) => {
   const user = auth.currentUser;
@@ -28,8 +38,8 @@ export const addBrew = async (brewData) => {
 };
 
 /**
- * Fetches all brew documents from Firestore for the current user.
- * @returns {Promise<Array>} A promise that resolves with an array of brew objects.
+ * Fetches all brew documents from Firestore for the current user
+ * @returns {Promise<Array>} A promise that resolves with an array of brew objects
  */
 export const getBrews = async () => {
   const user = auth.currentUser;
@@ -50,6 +60,38 @@ export const getBrews = async () => {
     return brews;
   } catch (error) {
     console.error("Error fetching brews from Firestore: ", error);
+    throw error;
+  }
+};
+
+/**
+ * Updates an existing brew document in Firestore
+ * @param {string} brewId - The ID of the brew document to update
+ * @param {object} brewData - The updated brew data from the form
+ * @returns {Promise<void>}
+ */
+export const updateBrew = async (brewId, brewData) => {
+  try {
+    const brewRef = doc(db, "brews", brewId);
+    await updateDoc(brewRef, brewData);
+    console.log("Brew successfully updated!");
+  } catch (error) {
+    console.error("Error updating brew: ", error);
+    throw error;
+  }
+};
+
+/**
+ * Deletes a brew document from Firestore
+ * @param {string} brewId - The ID of the brew document to delete
+ * @returns {Promise<void>}
+ */
+export const deleteBrew = async (brewId) => {
+  try {
+    await deleteDoc(doc(db, "brews", brewId));
+    console.log("Brew successfully deleted!");
+  } catch (error) {
+    console.error("Error deleting brew: ", error);
     throw error;
   }
 };
