@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -9,34 +9,37 @@ import {
   Keyboard,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, TextInput, Button, Menu, Switch, Card, Chip } from "react-native-paper";
 import Slider from "@react-native-community/slider";
 import global from "../styles/globalStyles";
-import { addBean } from "../src/firebase/beans";
+import { addBean, updateBean, deleteBean } from "../src/firebase/beans";
 
 const BeanEntryScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute(); // Hook to access route params
+  const existingBean = route.params?.bean; // Check if a bean was passed
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
+  // State Initializationinitialize the state directly from 'existingBean' - if it exists.
   // Mandatory fields
-  const [name, setName] = useState("");
-  const [roaster, setRoaster] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [roastType, setRoastType] = useState("");
-  const [rating, setRating] = useState(5); // Default to 5
+  const [name, setName] = useState(existingBean?.name || "");
+  const [roaster, setRoaster] = useState(existingBean?.roaster || "");
+  const [origin, setOrigin] = useState(existingBean?.origin || "");
+  const [roastType, setRoastType] = useState(existingBean?.roastType || "");
+  const [rating, setRating] = useState(existingBean?.rating || 0);
 
   // Optional fields
-  const [blend, setBlend] = useState("");
-  const [roastDate, setRoastDate] = useState("");
-  const [processMethod, setProcessMethod] = useState("");
-  const [bagSize, setBagSize] = useState(250); // Default to 250g
-  const [price, setPrice] = useState(15.0); // Default to €15.00
-  const [isDecaf, setIsDecaf] = useState(false);
-  const [flavourProfile, setFlavourProfile] = useState([]);
-  const [userNotes, setUserNotes] = useState("");
-  const [photoUrl, setPhotoUrl] = useState(""); // *NB* Will hold the image URL
+  const [blend, setBlend] = useState(existingBean?.blend || "");
+  const [roastDate, setRoastDate] = useState(existingBean?.roastDate || "");
+  const [processMethod, setProcessMethod] = useState(existingBean?.processMethod || "");
+  const [bagSize, setBagSize] = useState(existingBean?.bagSize || 0);
+  const [price, setPrice] = useState(existingBean?.price || 0);
+  const [isDecaf, setIsDecaf] = useState(existingBean?.isDecaf || false);
+  const [flavourProfile, setFlavourProfile] = useState(existingBean?.flavourProfile || []);
+  const [userNotes, setUserNotes] = useState(existingBean?.userNotes || "");
+  const [photoUrl, setPhotoUrl] = useState(existingBean?.photoUrl || "");
 
   // Menu visibility state
   const [roastMenuVisible, setRoastMenuVisible] = useState(false);
@@ -51,50 +54,122 @@ const BeanEntryScreen = () => {
     setFlavourProfile((prev) => (prev.includes(flavour) ? prev.filter((f) => f !== flavour) : [...prev, flavour]));
   };
 
-  // Updated handleSave function to be async and call our Firestore function
-  const handleSave = async () => {
-    // Basic validation to ensure mandatory fields are filled
-    if (!name || !roaster || !origin || !rating) {
-      Alert.alert(
-        "Missing Details",
-        "Please fill in all mandatory fields (Bean Name, Roaster, and Origin and Overall Rating).",
-      );
+  const getBeanDataFromState = () => ({
+    name,
+    roaster,
+    origin,
+    rating: parseFloat(rating.toFixed(1)),
+    roastType,
+    blend,
+    roastDate,
+    processMethod,
+    bagSize,
+    price: parseFloat(price.toFixed(2)),
+    isDecaf,
+    flavourProfile,
+    userNotes,
+    photoUrl,
+  });
+
+  const handleAdd = async () => {
+    if (!name || !roaster || !origin) {
+      Alert.alert("Missing Details", "Please fill in all mandatory fields.");
       return;
     }
-
     setIsSubmitting(true);
-
-    const beanData = {
-      // Mandatory fields
-      name,
-      roaster,
-      origin,
-      rating: parseFloat(rating.toFixed(1)),
-
-      // Optional fields
-      roastType,
-      blend,
-      roastDate,
-      processMethod,
-      bagSize,
-      price: parseFloat(price.toFixed(2)),
-      isDecaf,
-      flavourProfile,
-      userNotes,
-      photoUrl,
-    };
-
     try {
-      await addBean(beanData);
+      await addBean(getBeanDataFromState());
       Alert.alert("Success!", "Your bean has been saved.");
       navigation.goBack();
     } catch (error) {
-      Alert.alert("Error", "Could not save bean. Please try again.");
-      console.error("Error in handleSave:", error);
+      Alert.alert("Error", "Could not save bean.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleUpdate = async () => {
+    if (!existingBean?.id) return;
+    setIsSubmitting(true);
+    try {
+      await updateBean(existingBean.id, getBeanDataFromState());
+      Alert.alert("Success!", "Your bean has been updated.");
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert("Error", "Could not update bean.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!existingBean?.id) return;
+    // Confirmation alert to prevent accidental deletion
+    Alert.alert("Delete Bean", "Are you sure you want to delete this bean? This action cannot be undone.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          setIsSubmitting(true);
+          try {
+            await deleteBean(existingBean.id);
+            Alert.alert("Deleted!", "Your bean has been deleted.");
+            navigation.goBack();
+          } catch (error) {
+            Alert.alert("Error", "Could not delete bean.");
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+      },
+    ]);
+  };
+
+  // // Updated handleSave function to be async and call our Firestore function
+  // const handleSave = async () => {
+  //   // Basic validation to ensure mandatory fields are filled
+  //   if (!name || !roaster || !origin || !rating) {
+  //     Alert.alert(
+  //       "Missing Details",
+  //       "Please fill in all mandatory fields (Bean Name, Roaster, and Origin and Overall Rating).",
+  //     );
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   const beanData = {
+  //     // Mandatory fields
+  //     name,
+  //     roaster,
+  //     origin,
+  //     rating: parseFloat(rating.toFixed(1)),
+
+  //     // Optional fields
+  //     roastType,
+  //     blend,
+  //     roastDate,
+  //     processMethod,
+  //     bagSize,
+  //     price: parseFloat(price.toFixed(2)),
+  //     isDecaf,
+  //     flavourProfile,
+  //     userNotes,
+  //     photoUrl,
+  //   };
+
+  //   try {
+  //     await addBean(beanData);
+  //     Alert.alert("Success!", "Your bean has been saved.");
+  //     navigation.goBack();
+  //   } catch (error) {
+  //     Alert.alert("Error", "Could not save bean. Please try again.");
+  //     console.error("Error in handleSave:", error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
@@ -345,16 +420,42 @@ const BeanEntryScreen = () => {
               </Card.Content>
             </Card>
 
-            <Button
-              mode="contained"
-              onPress={handleSave}
-              style={local.button}
-              buttonColor="peru"
-              loading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              Save Bean
-            </Button>
+            {/* Action buttons (conditional rendering) */}
+            {existingBean ? (
+              <View style={local.buttonRow}>
+                <Button
+                  mode="outlined"
+                  onPress={handleDelete}
+                  style={local.deleteButton}
+                  textColor="firebrick"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                >
+                  Delete
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={handleUpdate}
+                  style={local.updateButton}
+                  buttonColor="peru"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                >
+                  Update
+                </Button>
+              </View>
+            ) : (
+              <Button
+                mode="contained"
+                onPress={handleAdd}
+                style={local.button}
+                buttonColor="peru"
+                loading={isSubmitting}
+                disabled={isSubmitting}
+              >
+                Save Bean
+              </Button>
+            )}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -406,6 +507,21 @@ const local = StyleSheet.create({
     backgroundColor: "blanchedalmond",
     borderColor: "black",
     borderWidth: 0.5,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginBottom: 60,
+  },
+  deleteButton: {
+    flex: 1,
+    marginRight: 8,
+    borderColor: "firebrick",
+  },
+  updateButton: {
+    flex: 1,
+    marginLeft: 8,
   },
 });
 

@@ -38,9 +38,7 @@ const BeanLibraryScreen = () => {
 
   // Card navigation
   const handleCardPress = (bean) => {
-    // **NB - add edit screen logic later
-    console.log("Navigating to edit bean:", bean.id);
-    // navigation.navigate("BeanEntry", { bean });
+    navigation.navigate("BeanEntry", { bean });
   };
 
   // Add Bean navigation

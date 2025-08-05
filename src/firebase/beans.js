@@ -1,4 +1,14 @@
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import db from "./firestore";
 import { auth } from "./auth";
 
@@ -11,7 +21,6 @@ import { auth } from "./auth";
 export const addBean = async (beanData) => {
   const user = auth.currentUser;
   if (!user) {
-    // safeguard
     throw new Error("No user is currently logged in.");
   }
 
@@ -55,6 +64,38 @@ export const getBeans = async () => {
     return beans;
   } catch (error) {
     console.error("Error fetching beans from Firestore: ", error);
+    throw error;
+  }
+};
+
+/**
+ * Updates an existing bean document in Firestore.
+ * @param {string} beanId - The ID of the bean document to update.
+ * @param {object} beanData - The updated bean data from the form.
+ * @returns {Promise<void>}
+ */
+export const updateBean = async (beanId, beanData) => {
+  try {
+    const beanRef = doc(db, "beans", beanId);
+    await updateDoc(beanRef, beanData);
+    console.log("Bean successfully updated!");
+  } catch (error) {
+    console.error("Error updating bean: ", error);
+    throw error;
+  }
+};
+
+/**
+ * Deletes a bean document from Firestore.
+ * @param {string} beanId - The ID of the bean document to delete.
+ * @returns {Promise<void>}
+ */
+export const deleteBean = async (beanId) => {
+  try {
+    await deleteDoc(doc(db, "beans", beanId));
+    console.log("Bean successfully deleted!");
+  } catch (error) {
+    console.error("Error deleting bean: ", error);
     throw error;
   }
 };
