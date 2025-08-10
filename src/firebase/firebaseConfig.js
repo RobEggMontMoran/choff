@@ -7,13 +7,13 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAgrxmz6ZeRBXD_LqevU3Kw9vjakOMyCz4",
-  authDomain: "choff-coffee-app.firebaseapp.com",
-  projectId: "choff-coffee-app",
-  storageBucket: "choff-coffee-app.firebasestorage.app",
-  messagingSenderId: "707154911589",
-  appId: "1:707154911589:web:ab30baecd3e6abfe16418c",
-  measurementId: "G-74Z7NN438G",
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
