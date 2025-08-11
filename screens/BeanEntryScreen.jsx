@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,6 +16,8 @@ import { Text, TextInput, Button, Menu, Switch, Card, Chip } from "react-native-
 import Slider from "@react-native-community/slider";
 import global from "../styles/globalStyles";
 import { addBean, updateBean, deleteBean } from "../src/firebase/beans";
+import * as ImagePicker from "expo-image-picker";
+import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
 
 const BeanEntryScreen = () => {
   const navigation = useNavigation();
@@ -126,50 +129,40 @@ const BeanEntryScreen = () => {
     ]);
   };
 
-  // // Updated handleSave function to be async and call our Firestore function
-  // const handleSave = async () => {
-  //   // Basic validation to ensure mandatory fields are filled
-  //   if (!name || !roaster || !origin || !rating) {
-  //     Alert.alert(
-  //       "Missing Details",
-  //       "Please fill in all mandatory fields (Bean Name, Roaster, and Origin and Overall Rating).",
-  //     );
-  //     return;
-  //   }
+  const handleImagePick = async () => {
+    // Ask for permission to access the media library.
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission Denied", "You've refused to allow this app to access your photos!");
+      return;
+    }
 
-  //   setIsSubmitting(true);
+    // Launch the image picker.
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [1, 1], // Enforce a square aspect ratio
+      quality: 0.5, // Compress the image to save space
+    });
 
-  //   const beanData = {
-  //     // Mandatory fields
-  //     name,
-  //     roaster,
-  //     origin,
-  //     rating: parseFloat(rating.toFixed(1)),
+    if (pickerResult.canceled) {
+      return;
+    }
 
-  //     // Optional fields
-  //     roastType,
-  //     blend,
-  //     roastDate,
-  //     processMethod,
-  //     bagSize,
-  //     price: parseFloat(price.toFixed(2)),
-  //     isDecaf,
-  //     flavourProfile,
-  //     userNotes,
-  //     photoUrl,
-  //   };
-
-  //   try {
-  //     await addBean(beanData);
-  //     Alert.alert("Success!", "Your bean has been saved.");
-  //     navigation.goBack();
-  //   } catch (error) {
-  //     Alert.alert("Error", "Could not save bean. Please try again.");
-  //     console.error("Error in handleSave:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
+    // If an image is selected, upload it and update the state.
+    if (pickerResult.assets && pickerResult.assets.length > 0) {
+      const uri = pickerResult.assets[0].uri;
+      try {
+        setIsSubmitting(true); // Show a loading indicator
+        const downloadURL = await uploadImageAndGetDownloadURL(uri);
+        setPhotoUrl(downloadURL); // Update the state with the new URL
+        // Alert.alert("Success", "Image uploaded successfully!");
+      } catch (error) {
+        Alert.alert("Upload Failed", "Sorry, we couldn't upload your image.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
@@ -411,12 +404,15 @@ const BeanEntryScreen = () => {
                 <Button
                   icon="camera"
                   mode="outlined"
-                  onPress={() => console.log("Image picker to be implemented")}
+                  onPress={handleImagePick}
                   style={local.input}
                   textColor="saddlebrown"
+                  disabled={isSubmitting}
                 >
-                  Add Photo
+                  {photoUrl ? "Change Photo" : "Add Photo"}
                 </Button>
+
+                {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
               </Card.Content>
             </Card>
 
@@ -522,6 +518,15 @@ const local = StyleSheet.create({
   updateButton: {
     flex: 1,
     marginLeft: 8,
+  },
+  imagePreview: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    alignSelf: "center",
+    marginVertical: 16,
+    borderWidth: 1,
+    borderColor: "peru",
   },
 });
 
