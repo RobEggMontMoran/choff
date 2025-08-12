@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,6 +17,8 @@ import Slider from "@react-native-community/slider";
 import global from "../styles/globalStyles";
 import { getBeans } from "../src/firebase/beans";
 import { addBrew, updateBrew, deleteBrew } from "../src/firebase/brews";
+import * as ImagePicker from "expo-image-picker";
+import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
 
 const BrewEntryScreen = () => {
   const navigation = useNavigation();
@@ -50,6 +53,7 @@ const BrewEntryScreen = () => {
   const [body, setBody] = useState(existingBrew?.tastingProfile?.body || 0);
   const [bitterness, setBitterness] = useState(existingBrew?.tastingProfile?.bitterness || 0);
   const [notes, setNotes] = useState(existingBrew?.notes || "");
+  const [photoUrl, setPhotoUrl] = useState(existingBrew?.photoUrl || "");
 
   // Fetch beans every time the screen comes into focus
   useFocusEffect(
@@ -84,6 +88,7 @@ const BrewEntryScreen = () => {
     date,
     tastingProfile: { aroma, acidity, sweetness, body, bitterness },
     notes,
+    photoUrl,
   });
 
   const handleAdd = async () => {
@@ -140,39 +145,40 @@ const BrewEntryScreen = () => {
     ]);
   };
 
-  // const handleSave = async () => {
-  //   if (!selectedBean) {
-  //     Alert.alert("No Bean Selected", "Please select a bean for this brew.");
-  //     return;
-  //   }
+  const handleImagePick = async () => {
+    // Ask for permission to access the media library.
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission Denied", "You've refused to allow this app to access your photos!");
+      return;
+    }
 
-  //   setIsSubmitting(true);
+    // Launch the image picker.
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [1, 1], // Enforce a square aspect ratio
+      quality: 0.5, // Compress the image to save space
+    });
 
-  //   const brewData = {
-  //     beanId: selectedBean.id, // Store the ID of the bean
-  //     beanName: selectedBean.name, // Store the name (for easy display)
-  //     roaster: selectedBean.roaster,
-  //     dose: parseFloat(dose.toFixed(1)),
-  //     yieldAmount: parseFloat(yieldAmount.toFixed(1)),
-  //     brewTime: parseFloat(brewTime.toFixed(1)),
-  //     temperature: parseFloat(temperature.toFixed(1)),
-  //     grindSize,
-  //     rating: parseFloat(rating.toFixed(1)),
-  //     date,
-  //     tastingProfile: { aroma, acidity, sweetness, body, bitterness },
-  //     notes,
-  //   };
-  //   try {
-  //     await addBrew(brewData);
-  //     Alert.alert("Success!", "Your brew has been saved.");
-  //     navigation.goBack();
-  //   } catch (error) {
-  //     Alert.alert("Error", "Could not save brew. Please try again.");
-  //     console.error("Error in handleSave:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
+    if (pickerResult.canceled) {
+      return;
+    }
+
+    // If an image is selected, upload it and update the state.
+    if (pickerResult.assets && pickerResult.assets.length > 0) {
+      const uri = pickerResult.assets[0].uri;
+      try {
+        setIsSubmitting(true); // Show a loading indicator
+        const downloadURL = await uploadImageAndGetDownloadURL(uri);
+        setPhotoUrl(downloadURL); // Update the state with the new URL
+        // Alert.alert("Success", "Image uploaded successfully!");
+      } catch (error) {
+        Alert.alert("Upload Failed", "Sorry, we couldn't upload your image.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
@@ -325,7 +331,7 @@ const BrewEntryScreen = () => {
 
             {/* Accordion - Optional Data Input */}
             <List.Accordion
-              title="Optional Feedback & Notes"
+              title="Optional Feedback & Photo"
               titleStyle={local.accordionTitle}
               style={local.accordion}
               expanded={optionalSectionExpanded}
@@ -416,6 +422,20 @@ const BrewEntryScreen = () => {
                     multiline
                     numberOfLines={4}
                   />
+
+                  <Button
+                    icon="camera"
+                    mode="outlined"
+                    onPress={handleImagePick}
+                    style={local.input}
+                    textColor="saddlebrown"
+                    disabled={isSubmitting}
+                  >
+                    {photoUrl ? "Change Photo" : "Add Photo"}
+                  </Button>
+
+                  {/* This will display the preview image once a photo is uploaded */}
+                  {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
                 </Card.Content>
               </Card>
             </List.Accordion>
@@ -509,6 +529,15 @@ const local = StyleSheet.create({
   updateButton: {
     flex: 1,
     marginLeft: 8,
+  },
+  imagePreview: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    alignSelf: "center",
+    marginVertical: 16,
+    borderWidth: 1,
+    borderColor: "peru",
   },
 });
 

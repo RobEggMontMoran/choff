@@ -18,7 +18,7 @@ const BeanCard = ({ bean, onPress }) => {
           </View>
         </View>
 
-        {/* Right side of card - Photo (currently placeholder) */}
+        {/* Right side of card - Photo */}
         {/* <View style={local.photo} /> */}
         {bean.photoUrl ? <Image source={{ uri: bean.photoUrl }} style={local.photo} /> : <View style={local.photo} />}
       </View>

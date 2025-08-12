@@ -412,6 +412,7 @@ const BeanEntryScreen = () => {
                   {photoUrl ? "Change Photo" : "Add Photo"}
                 </Button>
 
+                {/* This will display the preview image once a photo is uploaded */}
                 {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
               </Card.Content>
             </Card>

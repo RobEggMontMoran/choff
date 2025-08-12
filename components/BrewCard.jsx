@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import global from "../styles/globalStyles";
 import StarRating from "./StarRating";
 
@@ -20,8 +20,9 @@ const BrewCard = ({ brew, onPress }) => {
           </View>
         </View>
 
-        {/* Right side of card - Photo (currently placeholder) */}
-        <View style={local.photoPlaceholder} />
+        {/* Right side of card - Photo */}
+        {/* <View style={local.photo} /> */}
+        {brew.photoUrl ? <Image source={{ uri: brew.photoUrl }} style={local.photo} /> : <View style={local.photo} />}
       </View>
     </TouchableOpacity>
   );
@@ -44,7 +45,7 @@ const local = StyleSheet.create({
     flex: 1,
     paddingRight: 10,
   },
-  photoPlaceholder: {
+  photo: {
     width: 98,
     height: 98,
     backgroundColor: "tan",
