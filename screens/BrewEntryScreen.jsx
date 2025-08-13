@@ -150,7 +150,7 @@ const BrewEntryScreen = () => {
   };
 
   const handleImagePick = async () => {
-    // Ask for permission to access the media library.
+    // Ask for permission to access the media library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
       Alert.alert("Permission Denied", "You've refused to allow this app to access your photos!");
@@ -168,7 +168,7 @@ const BrewEntryScreen = () => {
       return;
     }
 
-    // If an image is selected, upload it and update the state.
+    // If an image is selected, upload it and update the state
     if (pickerResult.assets && pickerResult.assets.length > 0) {
       const uri = pickerResult.assets[0].uri;
       try {
@@ -184,44 +184,38 @@ const BrewEntryScreen = () => {
     }
   };
 
-  const formatTime = (timeInSeconds) => {
-    const minutes = String(Math.floor(timeInSeconds / 60)).padStart(2, "0");
-    const seconds = String(Math.floor(timeInSeconds % 60)).padStart(2, "0");
-    const tenthSeconds = String(Math.floor((timeInSeconds * 10) % 10));
-    return `${minutes}:${seconds}.${tenthSeconds}`;
+  const formatTime = (timeInMilliseconds) => {
+    return (timeInMilliseconds / 1000).toFixed(1);
   };
 
   // Timers useEffect
   useEffect(() => {
-    // Only set up an interval if the timer is active.
+    // set up an interval if the timer is active
     if (isActive) {
       const interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 0.1);
+        setTime((prevTime) => prevTime + 100);
       }, 100);
 
-      // The cleanup function will run when isActive changes to false or the screen is left.
+      // The cleanup function will run when isActive changes to false or the screen is left
       return () => clearInterval(interval);
     }
   }, [isActive]);
 
+  const handleToggle = () => {
+    if (isActive) {
+      // Captures the time, converts it to seconds, and rounds it to one decimal place
+      const finalTimeInSeconds = parseFloat((time / 1000).toFixed(1));
+      // Applys a rounded value to the brewTime slider
+      setBrewTime(finalTimeInSeconds);
+    }
+    // toggles the timer's active state
+    setIsActive(!isActive);
+  };
+
   const handleReset = () => {
     setIsActive(false);
     setTime(0);
-  };
-
-  // const handleStop = () => {
-  //   setIsActive(false);
-  //   // This takes the final time and applies it to your brew time slider
-  //   setBrewTime(parseFloat(time.toFixed(1)));
-  // };
-
-  const handleToggle = () => {
-    // Pausing updates the brewTime slider with the current time
-    if (isActive) {
-      setBrewTime(parseFloat(time.toFixed(1)));
-    }
-    // toggles the timer's active state.
-    setIsActive(!isActive);
+    setBrewTime(0); // resets the brew time slider's state
   };
 
   return (
@@ -304,7 +298,7 @@ const BrewEntryScreen = () => {
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
                     maximumValue={45}
-                    step={0.5}
+                    step={0.1}
                     value={brewTime}
                     onValueChange={setBrewTime}
                     minimumTrackTintColor="peru"
@@ -313,22 +307,9 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
-                {/* <View style={global.spacerM} /> */}
-
                 {/* Timer Display and Controls */}
                 <View style={local.timerContainer}>
                   <Text style={local.timerText}>{formatTime(time)}</Text>
-                  {/* <View style={local.timerControls}>
-                    <Button mode="contained" onPress={() => setIsActive(!isActive)} buttonColor="peru">
-                      {isActive ? "Pause" : "Start"}
-                    </Button>
-                    <Button mode="contained-tonal" onPress={handleStop} buttonColor="peru">
-                      Stop
-                    </Button>
-                    <Button mode="outlined" onPress={handleReset} textColor="saddlebrown">
-                      Reset
-                    </Button>
-                  </View> */}
                   <View style={local.timerControls}>
                     <Button mode="contained" onPress={handleToggle} buttonColor="peru">
                       {isActive ? "Pause" : "Start"}
@@ -347,7 +328,7 @@ const BrewEntryScreen = () => {
                     style={{ width: "100%", height: 40 }}
                     minimumValue={85}
                     maximumValue={100}
-                    step={0.5}
+                    step={0.1}
                     value={temperature}
                     onValueChange={setTemperature}
                     minimumTrackTintColor="peru"
@@ -572,7 +553,7 @@ const local = StyleSheet.create({
   },
   sliderLabel: {
     fontSize: 16,
-    color: "#333",
+    color: "saddlebrown",
     marginBottom: 8,
   },
   accordion: {

@@ -485,7 +485,7 @@ const local = StyleSheet.create({
   },
   sliderLabel: {
     fontSize: 16,
-    color: "#333",
+    color: "saddlebrown",
     marginBottom: 8,
   },
   switchContainer: {
