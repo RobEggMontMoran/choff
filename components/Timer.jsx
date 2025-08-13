@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { Button } from "react-native-paper";
 
 const Timer = ({ onTimeChange }) => {
-  // Timer's internal state
-  const [time, setTime] = useState(0); // Holds the elapsed time in milliseconds
-  const [isActive, setIsActive] = useState(false); // Tracks if the timer is running
+  const [time, setTime] = useState(0); // Elapsed time in milliseconds
+  const [isActive, setIsActive] = useState(false);
+  const startTimeRef = useRef(null);
+  const intervalRef = useRef(null);
 
   // The timer's core logic
   useEffect(() => {
     if (isActive) {
-      const interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 100);
-      }, 100);
-      return () => clearInterval(interval);
+      startTimeRef.current = Date.now() - time;
+      intervalRef.current = setInterval(() => {
+        setTime(Date.now() - startTimeRef.current);
+      }, 50);
+      return () => clearInterval(intervalRef.current);
+    } else {
+      clearInterval(intervalRef.current);
     }
   }, [isActive]);
 
@@ -31,8 +35,10 @@ const Timer = ({ onTimeChange }) => {
   const handleReset = () => {
     setIsActive(false);
     setTime(0);
-    // Use the prop to reset the time in the parent screen
     onTimeChange(0);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
   };
 
   // Helper function to format the display
