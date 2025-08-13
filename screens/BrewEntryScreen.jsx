@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import { getBeans } from "../src/firebase/beans";
 import { addBrew, updateBrew, deleteBrew } from "../src/firebase/brews";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
+import Timer from "../components/Timer";
 
 const BrewEntryScreen = () => {
   const navigation = useNavigation();
@@ -29,10 +30,6 @@ const BrewEntryScreen = () => {
   const [beanMenuVisible, setBeanMenuVisible] = useState(false);
   const [optionalSectionExpanded, setOptionalSectionExpanded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // loading state
-
-  // Timer state
-  const [time, setTime] = useState(0); // Holds the elapsed time in seconds
-  const [isActive, setIsActive] = useState(false); // Tracks if the timer is running
 
   // Data state
   const [availableBeans, setAvailableBeans] = useState([]); // holds beans fetched from Firestore
@@ -184,40 +181,6 @@ const BrewEntryScreen = () => {
     }
   };
 
-  const formatTime = (timeInMilliseconds) => {
-    return (timeInMilliseconds / 1000).toFixed(1);
-  };
-
-  // Timers useEffect
-  useEffect(() => {
-    // set up an interval if the timer is active
-    if (isActive) {
-      const interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 100);
-      }, 100);
-
-      // The cleanup function will run when isActive changes to false or the screen is left
-      return () => clearInterval(interval);
-    }
-  }, [isActive]);
-
-  const handleToggle = () => {
-    if (isActive) {
-      // Captures the time, converts it to seconds, and rounds it to one decimal place
-      const finalTimeInSeconds = parseFloat((time / 1000).toFixed(1));
-      // Applys a rounded value to the brewTime slider
-      setBrewTime(finalTimeInSeconds);
-    }
-    // toggles the timer's active state
-    setIsActive(!isActive);
-  };
-
-  const handleReset = () => {
-    setIsActive(false);
-    setTime(0);
-    setBrewTime(0); // resets the brew time slider's state
-  };
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -259,7 +222,7 @@ const BrewEntryScreen = () => {
                 </Menu>
 
                 <View style={local.input}>
-                  <Text style={local.sliderLabel}>Dose: {typeof dose === "number" ? dose.toFixed(1) : "18.0"}g</Text>
+                  <Text style={local.sliderLabel}>Dose: {dose.toFixed(1)}g</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={8}
@@ -275,7 +238,7 @@ const BrewEntryScreen = () => {
 
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>
-                    Yield: {typeof yieldAmount === "number" ? yieldAmount.toFixed(1) : "36.0"}g
+                    <Text style={local.sliderLabel}>Yield: {yieldAmount.toFixed(1)}g</Text>
                   </Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
@@ -291,9 +254,7 @@ const BrewEntryScreen = () => {
                 </View>
 
                 <View style={local.input}>
-                  <Text style={local.sliderLabel}>
-                    Time: {typeof brewTime === "number" ? brewTime.toFixed(1) : "28.0"}s
-                  </Text>
+                  <Text style={local.sliderLabel}>Time: {brewTime.toFixed(1)}s</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
@@ -307,22 +268,11 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
-                {/* Timer Display and Controls */}
-                <View style={local.timerContainer}>
-                  <Text style={local.timerText}>{formatTime(time)}</Text>
-                  <View style={local.timerControls}>
-                    <Button mode="contained" onPress={handleToggle} buttonColor="peru">
-                      {isActive ? "Pause" : "Start"}
-                    </Button>
-                    <Button mode="outlined" onPress={handleReset} textColor="saddlebrown">
-                      Reset
-                    </Button>
-                  </View>
-                </View>
+                <Timer onTimeChange={setBrewTime} />
 
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>
-                    Temperature: {typeof temperature === "number" ? temperature.toFixed(1) : "92.0"}°C
+                    <Text style={local.sliderLabel}>Temperature: {temperature.toFixed(1)}°C</Text>
                   </Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
@@ -353,9 +303,7 @@ const BrewEntryScreen = () => {
                 </View>
 
                 <View style={local.input}>
-                  <Text style={local.sliderLabel}>
-                    Overall Rating: {typeof rating === "number" ? rating.toFixed(1) : "5.0"}
-                  </Text>
+                  <Text style={local.sliderLabel}>Overall Rating: {rating.toFixed(1)}</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
@@ -485,7 +433,7 @@ const BrewEntryScreen = () => {
                     {photoUrl ? "Change Photo" : "Add Photo"}
                   </Button>
 
-                  {/* This will display the preview image once a photo is uploaded */}
+                  {/* Displays a preview image once a photo is uploaded */}
                   {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
                 </Card.Content>
               </Card>
@@ -589,24 +537,6 @@ const local = StyleSheet.create({
     marginVertical: 16,
     borderWidth: 1,
     borderColor: "peru",
-  },
-  timerContainer: {
-    alignItems: "center",
-    marginBottom: 25,
-    paddingVertical: 10,
-    backgroundColor: "oldlace",
-    borderRadius: 12,
-  },
-  timerText: {
-    fontSize: 50,
-    fontWeight: "bold",
-    color: "saddlebrown",
-    fontFamily: Platform.OS === "ios" ? "Courier New" : "monospace",
-  },
-  timerControls: {
-    flexDirection: "row",
-    marginTop: 10,
-    gap: 20,
   },
 });
 
