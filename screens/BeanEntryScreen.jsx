@@ -9,6 +9,7 @@ import {
   Keyboard,
   Alert,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,8 +19,9 @@ import global from "../styles/globalStyles";
 import { addBean, updateBean, deleteBean } from "../src/firebase/beans";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
-import { DatePickerModal } from "react-native-paper-dates";
-import { enGB, registerTranslation } from "react-native-paper-dates";
+// import { DatePickerModal } from "react-native-paper-dates";
+// import { enGB, registerTranslation } from "react-native-paper-dates";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const BeanEntryScreen = () => {
   const navigation = useNavigation();
@@ -50,7 +52,8 @@ const BeanEntryScreen = () => {
   const [roastMenuVisible, setRoastMenuVisible] = useState(false);
   const [blendMenuVisible, setBlendMenuVisible] = useState(false);
   const [processMenuVisible, setProcessMenuVisible] = useState(false);
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  // const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Flavour profile options
   // *NB* Possibly add custom option later
@@ -167,29 +170,52 @@ const BeanEntryScreen = () => {
     }
   };
 
-  const onDismiss = useCallback(() => {
-    setDatePickerVisible(false);
-  }, [setDatePickerVisible]);
+  // const onDismiss = useCallback(() => {
+  //   setDatePickerVisible(false);
+  // }, [setDatePickerVisible]);
 
-  const onConfirm = useCallback(
-    (params) => {
-      setDatePickerVisible(false);
-      // We get the date from the params and format it
-      setRoastDate(params.date.toLocaleDateString("en-GB"));
-    },
-    [setDatePickerVisible, setRoastDate],
-  );
+  // const onConfirm = useCallback(
+  //   (params) => {
+  //     setDatePickerVisible(false);
+  //     // We get the date from the params and format it
+  //     setRoastDate(params.date.toLocaleDateString("en-GB"));
+  //   },
+  //   [setDatePickerVisible, setRoastDate],
+  // );
+
+  const onChangeDate = (event, selectedDate) => {
+    // On Android, the picker is a modal that needs to be dismissed.
+    // On iOS, we'll let the user dismiss it with a "Done" button.
+    if (Platform.OS === "android") {
+      setShowDatePicker(false);
+    }
+
+    // We only update the date if a date was actually selected.
+    if (selectedDate) {
+      setRoastDate(selectedDate.toLocaleDateString("en-GB"));
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
       {/* Date Selector */}
-      <DatePickerModal
+      {/* <DatePickerModal
         locale="en-GB"
         mode="single"
         visible={datePickerVisible}
         onDismiss={onDismiss}
         onConfirm={onConfirm}
-      />
+      /> */}
+
+      {/* The Native Date Picker Component */}
+      {showDatePicker && (
+        <DateTimePicker
+          value={roastDate ? new Date(roastDate.split("/").reverse().join("-")) : new Date()}
+          mode="date"
+          display="default"
+          onChange={onChangeDate}
+        />
+      )}
 
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -355,15 +381,38 @@ const BeanEntryScreen = () => {
                   />
                 </Menu>
 
-                {/* <TextInput
-                  label="Roast Date (DD-MM-YYYY)"
-                  value={roastDate}
-                  onChangeText={setRoastDate}
-                  style={local.input}
-                  mode="outlined"
-                  keyboardType="numeric"
-                /> */}
-                <Button
+                {/* <TouchableOpacity activeOpacity={0.8} onPress={() => setShowDatePicker(true)}>
+                  <TextInput
+                    label="Roast Date"
+                    value={roastDate}
+                    style={local.input}
+                    mode="outlined"
+                    editable={false}
+                    pointerEvents="none" // ensures the Touchable handles all taps
+                    right={<TextInput.Icon icon="calendar" />}
+                  />
+                </TouchableOpacity> */}
+
+                <TouchableOpacity activeOpacity={0.8} onPress={() => setShowDatePicker(true)}>
+                  <TextInput
+                    label="Roast Date"
+                    value={roastDate}
+                    style={local.input}
+                    mode="outlined"
+                    editable={false} // Prevents manual text entry
+                    right={
+                      <TextInput.Icon
+                        icon="calendar"
+                        onPress={(e) => {
+                          e.stopPropagation(); // Prevent the wrapper's onPress from firing as well
+                          setShowDatePicker(true); // Open the date picker when tapping the icon
+                        }}
+                      />
+                    }
+                  />
+                </TouchableOpacity>
+
+                {/* <Button
                   icon="calendar"
                   mode="outlined"
                   onPress={() => setDatePickerVisible(true)}
@@ -371,7 +420,7 @@ const BeanEntryScreen = () => {
                   textColor="saddlebrown"
                 >
                   {roastDate || "Select Roast Date"}
-                </Button>
+                </Button> */}
 
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Bag Size: {bagSize}g</Text>
