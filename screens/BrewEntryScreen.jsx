@@ -20,6 +20,7 @@ import { addBrew, updateBrew, deleteBrew } from "../src/firebase/brews";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
 import Timer from "../components/Timer";
+import DatePickerInput from "../components/DatePickerInput";
 
 const BrewEntryScreen = () => {
   const navigation = useNavigation();
@@ -172,7 +173,6 @@ const BrewEntryScreen = () => {
         setIsSubmitting(true); // Show a loading indicator
         const downloadURL = await uploadImageAndGetDownloadURL(uri);
         setPhotoUrl(downloadURL); // Update the state with the new URL
-        // Alert.alert("Success", "Image uploaded successfully!");
       } catch (error) {
         Alert.alert("Upload Failed", "Sorry, we couldn't upload your image.");
       } finally {
@@ -317,14 +317,9 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
-                <TextInput
-                  label="Brew Date"
-                  value={date}
-                  onChangeText={setDate}
-                  style={local.input}
-                  mode="outlined"
-                  disabled
-                />
+                <View>
+                  <DatePickerInput label="Brew Date" dateValue={date} onDateChange={setDate} />
+                </View>
               </Card.Content>
             </Card>
 
