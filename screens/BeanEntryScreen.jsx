@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -18,6 +18,8 @@ import global from "../styles/globalStyles";
 import { addBean, updateBean, deleteBean } from "../src/firebase/beans";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
+import { DatePickerModal } from "react-native-paper-dates";
+import { enGB, registerTranslation } from "react-native-paper-dates";
 
 const BeanEntryScreen = () => {
   const navigation = useNavigation();
@@ -48,6 +50,7 @@ const BeanEntryScreen = () => {
   const [roastMenuVisible, setRoastMenuVisible] = useState(false);
   const [blendMenuVisible, setBlendMenuVisible] = useState(false);
   const [processMenuVisible, setProcessMenuVisible] = useState(false);
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
 
   // Flavour profile options
   // *NB* Possibly add custom option later
@@ -164,8 +167,30 @@ const BeanEntryScreen = () => {
     }
   };
 
+  const onDismiss = useCallback(() => {
+    setDatePickerVisible(false);
+  }, [setDatePickerVisible]);
+
+  const onConfirm = useCallback(
+    (params) => {
+      setDatePickerVisible(false);
+      // We get the date from the params and format it
+      setRoastDate(params.date.toLocaleDateString("en-GB"));
+    },
+    [setDatePickerVisible, setRoastDate],
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
+      {/* Date Selector */}
+      <DatePickerModal
+        locale="en-GB"
+        mode="single"
+        visible={datePickerVisible}
+        onDismiss={onDismiss}
+        onConfirm={onConfirm}
+      />
+
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
@@ -330,14 +355,23 @@ const BeanEntryScreen = () => {
                   />
                 </Menu>
 
-                <TextInput
+                {/* <TextInput
                   label="Roast Date (DD-MM-YYYY)"
                   value={roastDate}
                   onChangeText={setRoastDate}
                   style={local.input}
                   mode="outlined"
                   keyboardType="numeric"
-                />
+                /> */}
+                <Button
+                  icon="calendar"
+                  mode="outlined"
+                  onPress={() => setDatePickerVisible(true)}
+                  style={local.input}
+                  textColor="saddlebrown"
+                >
+                  {roastDate || "Select Roast Date"}
+                </Button>
 
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Bag Size: {bagSize}g</Text>
