@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Choff", // Other Options - 9Bar, 9Bars,
+    "name": "Choff",
     "slug": "choff",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -24,6 +24,11 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7c803c00-aa50-4330-8699-f0b33f315c8c"
+      }
     }
   }
 }
