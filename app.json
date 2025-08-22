@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/images/choffLogo4.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.r0bbier0cks.choff"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
