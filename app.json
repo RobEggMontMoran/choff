@@ -26,6 +26,7 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
+    "plugins": ["@react-native-firebase/app"],
     "extra": {
       "eas": {
         "projectId": "7c803c00-aa50-4330-8699-f0b33f315c8c"
