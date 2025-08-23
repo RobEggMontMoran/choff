@@ -10,7 +10,7 @@ import { initializeApp } from "firebase/app";
 const firebaseConfig = {
   // apiKey: process.env.EXPO_PUBLIC_API_KEY,
 
-  apiKey: Platform.OS === "web" ? process.env.EXPO_PUBLIC_API_KEY_WEB : process.env.EXPO_PUBLIC_API_KEY_ANDROID,
+  // apiKey: Platform.OS === "web" ? process.env.EXPO_PUBLIC_API_KEY_WEB : process.env.EXPO_PUBLIC_API_KEY_ANDROID,
 
   // Always use the Web API Key for the JavaScript SDK initialization
   apiKey: process.env.EXPO_PUBLIC_API_KEY_WEB,
