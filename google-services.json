@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "707154911589",
+    "project_id": "choff-coffee-app",
+    "storage_bucket": "choff-coffee-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707154911589:android:66b6ea6ffcceb2c016418c",
+        "android_client_info": {
+          "package_name": "com.robertmoran.choff"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxiMBp8naY33AElaU7QegJcU1GHoJs14c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

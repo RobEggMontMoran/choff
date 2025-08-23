@@ -20,12 +20,27 @@
         "foregroundImage": "./assets/images/choffLogo4.png",
         "backgroundColor": "#ffffff"
       },
+      //       "edgeToEdgeEnabled": true,
+      //       "package": "com.r0bbier0cks.choff"
+      //     },
+      //     "web": {
+      //       "favicon": "./assets/images/favicon.png"
+      //     },
+      //     "extra": {
+      //       "eas": {
+      //         "projectId": "7c803c00-aa50-4330-8699-f0b33f315c8c"
+      //       }
+      //     }
+      //   }
+      // }
       "edgeToEdgeEnabled": true,
-      "package": "com.r0bbier0cks.choff"
+      "package": "com.robertmoran.choff",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
+    "plugins": ["@react-native-firebase/app", "@react-native-firebase/crashlytics"],
     "extra": {
       "eas": {
         "projectId": "7c803c00-aa50-4330-8699-f0b33f315c8c"
