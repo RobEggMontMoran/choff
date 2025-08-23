@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.r0bbier0cks.choff"
+      "package": "com.robertmoran.choff"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
