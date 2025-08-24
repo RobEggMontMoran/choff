@@ -1,17 +1,18 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import global from "../styles/globalStyles";
-// import dummyBeans from "../data/dummyBeans";
 import BeanCard from "../components/BeanCard";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { getBeans } from "../src/firebase/beans";
+import SearchSortBar from "../components/SearchSortBar";
 
 const BeanLibraryScreen = () => {
   const navigation = useNavigation();
   const [beans, setBeans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // useFocusEffect re-fetches data every time the screen loads
   // This ensures the list is updated after adding a new bean
@@ -35,6 +36,21 @@ const BeanLibraryScreen = () => {
       fetchBeans();
     }, []), // The empty dependency array means the fetch logic is created once
   );
+
+  // Filtering logic
+  // useMemo will only re-calculate the filtered list when beans or searchQuery changes
+  const filteredBeans = useMemo(() => {
+    if (!searchQuery) {
+      return beans; // If search is empty, return all beans
+    }
+    // Filter by bean name, roaster, or origin, case-insensitive
+    return beans.filter(
+      (bean) =>
+        bean.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bean.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bean.origin.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [beans, searchQuery]);
 
   // Card navigation
   const handleCardPress = (bean) => {
@@ -62,7 +78,10 @@ const BeanLibraryScreen = () => {
         <Text style={global.subheadingM}>Explore your Bean Archive</Text>
       </View>
 
-      <View style={global.spacerL} />
+      <View style={global.spacerS} />
+
+      {/* SearchSortBar component */}
+      <SearchSortBar searchQuery={searchQuery} onSearchQueryChange={setSearchQuery} />
 
       {/* Message for empty lists */}
       {beans.length === 0 ? (
@@ -76,7 +95,8 @@ const BeanLibraryScreen = () => {
       ) : (
         // BeanCard list - updated with live firestore data
         <FlatList
-          data={beans}
+          // data={beans}
+          data={filteredBeans}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={local.cardWrapper}>
@@ -85,6 +105,7 @@ const BeanLibraryScreen = () => {
           )}
           contentContainerStyle={local.listSpacing}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<Text style={local.noResultsText}>No beans match your search.</Text>}
         />
       )}
 
@@ -110,6 +131,12 @@ const local = StyleSheet.create({
     backgroundColor: "saddlebrown",
     borderRadius: 40,
     padding: 16,
+  },
+  noResultsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "sienna",
   },
 });
 
