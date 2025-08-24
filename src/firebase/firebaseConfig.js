@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// import { Platform } from "react-native";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -8,20 +7,21 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  // apiKey: process.env.EXPO_PUBLIC_API_KEY,
-
-  // apiKey: Platform.OS === "web" ? process.env.EXPO_PUBLIC_API_KEY_WEB : process.env.EXPO_PUBLIC_API_KEY_ANDROID,
-
-  // Always use the Web API Key for the JavaScript SDK initialization
-  apiKey: process.env.EXPO_PUBLIC_API_KEY_WEB,
-
-  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_APP_ID,
-  measurementId: process.env.EXPO_PUBLIC_MEASUREMENT_ID,
+  apiKey: "AIzaSyAgrxmz6ZeRBXD_LqevU3Kw9vjakOMyCz4",
+  authDomain: "choff-coffee-app.firebaseapp.com",
+  projectId: "choff-coffee-app",
+  storageBucket: "choff-coffee-app.firebasestorage.app",
+  messagingSenderId: "707154911589",
+  appId: "1:707154911589:web:ab30baecd3e6abfe16418c",
+  measurementId: "G-74Z7NN438G",
 };
+
+// START OF DIAGNOSTIC LOGGING
+console.log("--- Firebase Config Debug ---");
+console.log("Initialising Firebase with hardcoded config.");
+console.log("API Key being used:", firebaseConfig.apiKey);
+console.log("---------------------------");
+// END OF DIAGNOSTIC LOGGING
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
