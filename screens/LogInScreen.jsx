@@ -2,7 +2,7 @@ import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } fr
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import global from "../styles/globalStyles";
-import { loginUser } from "../src/firebase/auth";
+import { loginUser, sendPasswordReset } from "../src/firebase/auth";
 
 const LogInScreen = () => {
   const navigation = useNavigation();
@@ -32,6 +32,31 @@ const LogInScreen = () => {
         errorMessage = "Invalid email or password. Please try again.";
       }
       Alert.alert("Login Failed", errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Password reset function
+  const handleForgotPassword = async () => {
+    if (!email) {
+      Alert.alert("Email Required", "Please enter your email address in the email field first.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await sendPasswordReset(email);
+      // generic success message - for security doesn't reveal if an email is registered
+      Alert.alert(
+        "Password Reset Email Sent",
+        `If an account exists for ${email}, a reset link has been sent. Please check your inbox.`,
+      );
+    } catch (err) {
+      // generic message on error for the same security reason
+      Alert.alert(
+        "Password Reset Email Sent",
+        `If an account exists for ${email}, a reset link has been sent. Please check your inbox.`,
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -76,6 +101,11 @@ const LogInScreen = () => {
         />
       </View>
 
+      {/* Forgot Password Button */}
+      <TouchableOpacity onPress={handleForgotPassword} disabled={isSubmitting}>
+        <Text style={local.forgotPasswordText}>Forgot Password?</Text>
+      </TouchableOpacity>
+
       {/* Submit Button */}
       <View style={local.buttonMargin}>
         <Button
@@ -86,8 +116,8 @@ const LogInScreen = () => {
         />
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")}>
-        <Text style={{ color: "saddlebrown", textAlign: "center", marginBottom: 50 }}>Create Account</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} disabled={isSubmitting}>
+        <Text style={local.createAccountText}>Create Account</Text>
       </TouchableOpacity>
     </View>
   );
@@ -97,6 +127,17 @@ const local = StyleSheet.create({
   buttonMargin: {
     marginTop: 20,
     marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: "saddlebrown",
+    textAlign: "right",
+    marginBottom: 20,
+    paddingHorizontal: 5,
+  },
+  createAccountText: {
+    color: "saddlebrown",
+    textAlign: "center",
+    marginBottom: 50,
   },
 });
 
