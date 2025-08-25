@@ -46,7 +46,7 @@ const BrewEntryScreen = () => {
   const [temperature, setTemperature] = useState(existingBrew?.temperature || 85);
   const [grindSize, setGrindSize] = useState(existingBrew?.grindSize || 1);
   const [rating, setRating] = useState(existingBrew?.rating || 0);
-  const [date, setDate] = useState(existingBrew?.date || new Date().toLocaleDateString("en-GB")); // Defaults to today's date
+  const [date, setDate] = useState(existingBrew?.date || new Date()); // Defaults to today's date
 
   // Optional fields
   const [aroma, setAroma] = useState(existingBrew?.tastingProfile?.aroma || 0);

@@ -4,6 +4,10 @@ import StarRating from "./StarRating";
 
 // Card rendering function
 const BrewCard = ({ brew, onPress }) => {
+  // helper function to safely format 'date'
+  // checks if brew.date exists and has a toDate method before calling it
+  const formattedDate = brew.date?.toDate ? brew.date.toDate().toLocaleDateString("en-GB") : "No date";
+
   return (
     <TouchableOpacity style={local.card} onPress={onPress}>
       <View style={local.contentRow}>
@@ -13,7 +17,7 @@ const BrewCard = ({ brew, onPress }) => {
           <Text style={global.subheadingM}>
             {brew.dose}g beans - {brew.yieldAmount}g espresso
           </Text>
-          <Text style={global.subheadingM}>Date: {brew.date}</Text>
+          <Text style={global.subheadingM}>Date: {formattedDate}</Text>
           <View style={local.ratingRow}>
             <StarRating rating={brew.rating} />
             <Text style={global.subheadingM}>({brew.rating.toFixed(1)})</Text>
@@ -21,7 +25,6 @@ const BrewCard = ({ brew, onPress }) => {
         </View>
 
         {/* Right side of card - Photo */}
-        {/* <View style={local.photo} /> */}
         {brew.photoUrl ? <Image source={{ uri: brew.photoUrl }} style={local.photo} /> : <View style={local.photo} />}
       </View>
     </TouchableOpacity>

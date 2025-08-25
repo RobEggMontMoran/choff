@@ -1,17 +1,19 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { View, FlatList, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import global from "../styles/globalStyles";
-// import dummyBrews from "../data/dummyBrews";
 import BrewCard from "../components/BrewCard";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { getBrews } from "../src/firebase/brews";
+import SearchSortBar from "../components/SearchSortBar";
 
 const BrewHistoryScreen = () => {
   const navigation = useNavigation();
   const [brews, setBrews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); // state for search
+  const [sortOption, setSortOption] = useState("date_desc"); // state for sort
 
   // re-fetches data every time the screen loads
   useFocusEffect(
@@ -34,6 +36,47 @@ const BrewHistoryScreen = () => {
     }, []),
   );
 
+  // filtering and sorting logic for brews
+  const processedBrews = useMemo(() => {
+    let filtered = brews;
+
+    // filter the search query (checking beanName and brewMethod)
+    if (searchQuery) {
+      filtered = brews.filter(
+        (brew) =>
+          // Search by the bean's name
+          brew.beanName.toLowerCase().includes(searchQuery.toLowerCase()),
+        // ||
+        // // search by brew notes
+        // (brew.notes && brew.notes.toLowerCase().includes(searchQuery.toLowerCase())),
+      );
+    }
+
+    // Then, sort the filtered list
+    const sorted = [...filtered].sort((a, b) => {
+      const getDateValue = (brew) => {
+        if (brew && brew.date && typeof brew.date.toDate === "function") {
+          return brew.date.toDate().getTime();
+        }
+        return 0;
+      };
+
+      switch (sortOption) {
+        case "date_asc":
+          return getDateValue(a) - getDateValue(b);
+        case "rating_desc":
+          return b.rating - a.rating;
+        case "rating_asc":
+          return a.rating - b.rating;
+        case "date_desc":
+        default:
+          return getDateValue(b) - getDateValue(a);
+      }
+    });
+
+    return sorted;
+  }, [brews, searchQuery, sortOption]);
+
   // Card navigation - navigates to the BrewEntry screen and passes the brew data
   const handleCardPress = (brew) => {
     navigation.navigate("BrewEntry", { brew });
@@ -42,7 +85,6 @@ const BrewHistoryScreen = () => {
   // Add Brew navigation
   const handleAddPress = () => {
     navigation.navigate("BrewEntry");
-    // navigation.navigate("BrewEntry", { mode: "addBrew" }); // placeholder
   };
 
   if (isLoading) {
@@ -60,7 +102,15 @@ const BrewHistoryScreen = () => {
         <Text style={global.subheadingM}>Refine your technique over time</Text>
       </View>
 
-      <View style={global.spacerL} />
+      <View style={global.spacerS} />
+
+      {/* SearchSortBar component */}
+      <SearchSortBar
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        sortOption={sortOption}
+        onSortOptionChange={setSortOption}
+      />
 
       {brews.length === 0 ? (
         <View style={global.alignCenter}>
@@ -72,7 +122,7 @@ const BrewHistoryScreen = () => {
         </View>
       ) : (
         <FlatList
-          data={brews}
+          data={processedBrews}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={local.cardWrapper}>
@@ -81,6 +131,7 @@ const BrewHistoryScreen = () => {
           )}
           contentContainerStyle={local.listSpacing}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<Text style={local.noResultsText}>No brews match your search.</Text>}
         />
       )}
 
@@ -106,6 +157,12 @@ const local = StyleSheet.create({
     backgroundColor: "saddlebrown",
     borderRadius: 40,
     padding: 16,
+  },
+  noResultsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "sienna",
   },
 });
 

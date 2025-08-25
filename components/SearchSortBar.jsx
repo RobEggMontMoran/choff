@@ -62,7 +62,7 @@ const SearchSortBar = ({ searchQuery, onSearchQueryChange, sortOption, onSortOpt
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 15,
+    marginBottom: 5,
   },
   searchbar: {
     backgroundColor: "oldlace",
