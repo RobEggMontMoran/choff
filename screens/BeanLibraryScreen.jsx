@@ -13,6 +13,7 @@ const BeanLibraryScreen = () => {
   const [beans, setBeans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("date_desc"); // sorting defaults to newest added first
 
   // useFocusEffect re-fetches data every time the screen loads
   // This ensures the list is updated after adding a new bean
@@ -37,20 +38,44 @@ const BeanLibraryScreen = () => {
     }, []), // The empty dependency array means the fetch logic is created once
   );
 
-  // Filtering logic
-  // useMemo will only re-calculate the filtered list when beans or searchQuery changes
-  const filteredBeans = useMemo(() => {
-    if (!searchQuery) {
-      return beans; // If search is empty, return all beans
+  const processedBeans = useMemo(() => {
+    let filtered = beans;
+
+    if (searchQuery) {
+      filtered = beans.filter(
+        (bean) =>
+          bean.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          bean.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          bean.origin.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     }
-    // Filter by bean name, roaster, or origin, case-insensitive
-    return beans.filter(
-      (bean) =>
-        bean.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bean.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bean.origin.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [beans, searchQuery]);
+
+    const sorted = [...filtered].sort((a, b) => {
+      // Helper function to safely get a comparable date value (as a number)
+      const getDateValue = (bean) => {
+        // Check if roastDate exists AND if it has the toDate method
+        if (bean && bean.roastDate && typeof bean.roastDate.toDate === "function") {
+          return bean.roastDate.toDate().getTime(); // Return the numeric timestamp
+        }
+        // If not, return a very old date (0) to sort it to the end
+        return 0;
+      };
+
+      switch (sortOption) {
+        case "date_asc":
+          return getDateValue(a) - getDateValue(b);
+        case "rating_desc":
+          return b.rating - a.rating;
+        case "rating_asc":
+          return a.rating - b.rating;
+        case "date_desc":
+        default:
+          return getDateValue(b) - getDateValue(a);
+      }
+    });
+
+    return sorted;
+  }, [beans, searchQuery, sortOption]);
 
   // Card navigation
   const handleCardPress = (bean) => {
@@ -81,7 +106,12 @@ const BeanLibraryScreen = () => {
       <View style={global.spacerS} />
 
       {/* SearchSortBar component */}
-      <SearchSortBar searchQuery={searchQuery} onSearchQueryChange={setSearchQuery} />
+      <SearchSortBar
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        sortOption={sortOption}
+        onSortOptionChange={setSortOption}
+      />
 
       {/* Message for empty lists */}
       {beans.length === 0 ? (
@@ -95,8 +125,7 @@ const BeanLibraryScreen = () => {
       ) : (
         // BeanCard list - updated with live firestore data
         <FlatList
-          // data={beans}
-          data={filteredBeans}
+          data={processedBeans}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={local.cardWrapper}>

@@ -31,12 +31,14 @@ const BeanEntryScreen = () => {
   const [name, setName] = useState(existingBean?.name || "");
   const [roaster, setRoaster] = useState(existingBean?.roaster || "");
   const [origin, setOrigin] = useState(existingBean?.origin || "");
-  const [roastType, setRoastType] = useState(existingBean?.roastType || "");
+
+  const [roastDate, setRoastDate] = useState(existingBean?.roastDate || new Date());
   const [rating, setRating] = useState(existingBean?.rating || 0);
 
   // Optional fields
+  const [roastType, setRoastType] = useState(existingBean?.roastType || "");
   const [blend, setBlend] = useState(existingBean?.blend || "");
-  const [roastDate, setRoastDate] = useState(existingBean?.roastDate || "");
+
   const [processMethod, setProcessMethod] = useState(existingBean?.processMethod || "");
   const [bagSize, setBagSize] = useState(existingBean?.bagSize || 0);
   const [price, setPrice] = useState(existingBean?.price || 0);
@@ -76,7 +78,7 @@ const BeanEntryScreen = () => {
   });
 
   const handleAdd = async () => {
-    if (!name || !roaster || !origin) {
+    if (!name || !roaster || !origin || !roastDate) {
       Alert.alert("Missing Details", "Please fill in all mandatory fields.");
       return;
     }
@@ -170,7 +172,8 @@ const BeanEntryScreen = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
             <View style={global.alignCenter}>
-              <Text style={global.headingL}>Add New Bean</Text>
+              {/* <Text style={global.headingL}>Add New Bean</Text> */}
+              <Text style={global.headingL}>{existingBean ? "Edit Bean" : "Add New Bean"}</Text>
               <Text style={global.subheadingM}>Log your Espresso Bean Details</Text>
             </View>
             <View style={global.spacerM} />
@@ -190,6 +193,10 @@ const BeanEntryScreen = () => {
                   mode="outlined"
                 />
                 <TextInput label="Origin" value={origin} onChangeText={setOrigin} style={local.input} mode="outlined" />
+
+                <View>
+                  <DatePickerInput label="Roast Date" dateValue={roastDate} onDateChange={setRoastDate} />
+                </View>
 
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Rating: {rating.toFixed(1)} / 10</Text>
@@ -329,10 +336,6 @@ const BeanEntryScreen = () => {
                     title="Honey"
                   />
                 </Menu>
-
-                <View>
-                  <DatePickerInput label="Roast Date" dateValue={roastDate} onDateChange={setRoastDate} />
-                </View>
 
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Bag Size: {bagSize}g</Text>
