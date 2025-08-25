@@ -21,6 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
 import Timer from "../components/Timer";
 import DatePickerInput from "../components/DatePickerInput";
+import AiBaristaBlock from "../components/AiBaristaBlock";
 
 const BrewEntryScreen = () => {
   const navigation = useNavigation();
@@ -187,9 +188,13 @@ const BrewEntryScreen = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
             <View style={global.alignCenter}>
-              <Text style={global.headingL}>Add New Brew</Text>
+              <Text style={global.headingL}>{existingBrew ? "Edit Brew" : "Add New Brew"}</Text>
               <Text style={global.subheadingM}>Log your Espresso Recipe</Text>
             </View>
+
+            {/* AI Component */}
+            {existingBrew && <AiBaristaBlock brewData={existingBrew} />}
+
             <View style={global.spacerM} />
 
             <Card style={local.card}>
