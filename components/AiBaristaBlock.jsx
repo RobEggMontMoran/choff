@@ -59,7 +59,8 @@ const AiBaristaBlock = ({ brewData }) => {
 const local = StyleSheet.create({
   card: {
     backgroundColor: "oldlace",
-    marginBottom: 20,
+    marginBottom: 2,
+    marginTop: 15,
   },
   cardTitle: {
     fontSize: 18,

@@ -50,11 +50,14 @@ const BrewEntryScreen = () => {
   const [date, setDate] = useState(existingBrew?.date || new Date()); // Defaults to today's date
 
   // Optional fields
-  const [aroma, setAroma] = useState(existingBrew?.tastingProfile?.aroma || 0);
-  const [acidity, setAcidity] = useState(existingBrew?.tastingProfile?.acidity || 0);
-  const [sweetness, setSweetness] = useState(existingBrew?.tastingProfile?.sweetness || 0);
-  const [body, setBody] = useState(existingBrew?.tastingProfile?.body || 0);
-  const [bitterness, setBitterness] = useState(existingBrew?.tastingProfile?.bitterness || 0);
+  // const [aroma, setAroma] = useState(existingBrew?.tastingProfile?.aroma || 0);
+  // const [acidity, setAcidity] = useState(existingBrew?.tastingProfile?.acidity || 0);
+  // const [sweetness, setSweetness] = useState(existingBrew?.tastingProfile?.sweetness || 0);
+  // const [body, setBody] = useState(existingBrew?.tastingProfile?.body || 0);
+  // const [bitterness, setBitterness] = useState(existingBrew?.tastingProfile?.bitterness || 0);
+  const [aroma, setAroma] = useState(existingBrew?.aroma || 0);
+  const [flavourBalance, setFlavourBalance] = useState(existingBrew?.flavourBalance || 0);
+  const [mouthfeel, setMouthfeel] = useState(existingBrew?.mouthfeel || 0);
   const [notes, setNotes] = useState(existingBrew?.notes || "");
   const [photoUrl, setPhotoUrl] = useState(existingBrew?.photoUrl || "");
 
@@ -89,7 +92,10 @@ const BrewEntryScreen = () => {
     grindSize,
     rating: parseFloat(rating.toFixed(1)),
     date,
-    tastingProfile: { aroma, acidity, sweetness, body, bitterness },
+    // tastingProfile: { aroma, acidity, sweetness, body, bitterness },
+    aroma,
+    flavourBalance,
+    mouthfeel,
     notes,
     photoUrl,
   });
@@ -308,7 +314,7 @@ const BrewEntryScreen = () => {
                 </View>
 
                 <View style={local.input}>
-                  <Text style={local.sliderLabel}>Overall Rating: {rating.toFixed(1)}</Text>
+                  <Text style={local.sliderLabel}>Overall Rating: {rating.toFixed(1)}/10</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
@@ -342,7 +348,8 @@ const BrewEntryScreen = () => {
                 <Card.Content>
                   {/* <Card.Content style={{ paddingHorizontal: 0 }}> */}
                   <View style={local.input}>
-                    <Text style={local.sliderLabel}>Aroma: {aroma}</Text>
+                    <Text style={local.sliderLabel}>Aroma: {aroma}/10</Text>
+                    <Text style={local.helperText}>The smell or fragrance of the brew</Text>
                     <Slider
                       style={{ width: "100%", height: 40 }}
                       minimumValue={0}
@@ -355,7 +362,7 @@ const BrewEntryScreen = () => {
                       thumbTintColor="peru"
                     />
                   </View>
-                  <View style={local.input}>
+                  {/* <View style={local.input}>
                     <Text style={local.sliderLabel}>Acidity: {acidity}</Text>
                     <Slider
                       style={{ width: "100%", height: 40 }}
@@ -406,6 +413,38 @@ const BrewEntryScreen = () => {
                       step={1}
                       value={bitterness}
                       onValueChange={setBitterness}
+                      minimumTrackTintColor="peru"
+                      maximumTrackTintColor="#000000"
+                      thumbTintColor="peru"
+                    />
+                  </View> */}
+
+                  <View style={local.input}>
+                    <Text style={local.sliderLabel}>Flavour Balance: {flavourBalance}/10</Text>
+                    <Text style={local.helperText}>The balance of sweetness, acidity, and bitterness</Text>
+                    <Slider
+                      style={{ width: "100%", height: 40 }}
+                      minimumValue={0}
+                      maximumValue={10}
+                      step={1}
+                      value={flavourBalance}
+                      onValueChange={setFlavourBalance}
+                      minimumTrackTintColor="peru"
+                      maximumTrackTintColor="#000000"
+                      thumbTintColor="peru"
+                    />
+                  </View>
+
+                  <View style={local.input}>
+                    <Text style={local.sliderLabel}>Mouthfeel: {mouthfeel}/10</Text>
+                    <Text style={local.helperText}>The texture or body of the coffee</Text>
+                    <Slider
+                      style={{ width: "100%", height: 40 }}
+                      minimumValue={0}
+                      maximumValue={10}
+                      step={1}
+                      value={mouthfeel}
+                      onValueChange={setMouthfeel}
                       minimumTrackTintColor="peru"
                       maximumTrackTintColor="#000000"
                       thumbTintColor="peru"
@@ -537,6 +576,17 @@ const local = StyleSheet.create({
     marginVertical: 16,
     borderWidth: 1,
     borderColor: "peru",
+  },
+  sliderLabel: {
+    fontSize: 16,
+    color: "saddlebrown",
+    marginBottom: 8,
+  },
+  helperText: {
+    fontSize: 12,
+    color: "sienna",
+    marginBottom: 8,
+    marginTop: -8,
   },
 });
 
