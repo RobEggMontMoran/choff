@@ -1,0 +1,40 @@
+import "dotenv/config";
+
+export default {
+  expo: {
+    name: "Choff",
+    slug: "choff",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/images/choffLogo4.png",
+    userInterfaceStyle: "light",
+    newArchEnabled: true,
+    splash: {
+      image: "./assets/images/splash-icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#ffffff",
+    },
+    ios: {
+      supportsTablet: true,
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/choffLogo4.png",
+        backgroundColor: "#ffffff",
+      },
+      edgeToEdgeEnabled: true,
+      package: "com.robertmoran.choff",
+      googleServicesFile: "./google-services.json",
+    },
+    web: {
+      favicon: "./assets/images/favicon.png",
+    },
+    plugins: ["@react-native-firebase/app", "@react-native-firebase/crashlytics"],
+    extra: {
+      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+      eas: {
+        projectId: "7c803c00-aa50-4330-8699-f0b33f315c8c",
+      },
+    },
+  },
+};

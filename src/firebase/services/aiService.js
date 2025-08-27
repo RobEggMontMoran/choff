@@ -1,6 +1,12 @@
-import { GEMINI_API_KEY } from "@env";
+import Constants from "expo-constants";
+
+// Safely read the API key from app.json/.env (via expo-constants)
+const GEMINI_API_KEY = Constants.expoConfig?.extra?.GOOGLE_API_KEY || Constants.manifest?.extra?.GOOGLE_API_KEY;
 
 const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+// Guard flag to prevent duplicate calls
+let isFetching = false;
 
 /**
  * Generates a brewing suggestion from the Gemini API based on brew data
@@ -8,6 +14,14 @@ const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-
  * @returns {Promise<string>} A promise that resolves with the AI's suggestion
  */
 export const getBrewSuggestion = async (brewData) => {
+  // Prevent duplicate requests if one is already running
+  if (isFetching) {
+    console.log("⏸Ignored duplicate getBrewSuggestion call");
+    return;
+  }
+  isFetching = true;
+  console.log("getBrewSuggestion called with:", brewData);
+
   // promtp for AI model
   const prompt = `
 You are an expert espresso brewing assistant named **Dialed**. Your goal is to help a home barista improve their next shot by providing one single, clear, and actionable adjustment. You are friendly, concise, and confident.
@@ -58,7 +72,6 @@ You must provide your response in exactly two paragraphs, following this structu
 -   Grind Size: ${brewData.grindSize}
 -   User's Overall Rating: ${brewData.rating}/10
 `;
-
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -77,6 +90,7 @@ You must provide your response in exactly two paragraphs, following this structu
     }
 
     const data = await response.json();
+    console.log("Raw API response:", data);
 
     // Navigate through the response structure to get the generated text
     const suggestion = data.candidates[0]?.content?.parts[0]?.text;
@@ -85,10 +99,12 @@ You must provide your response in exactly two paragraphs, following this structu
       throw new Error("Could not extract suggestion from API response.");
     }
 
-    // Clean up the response - remove any potential markdown or extra whitespace
     return suggestion.trim();
   } catch (error) {
     console.error("Error calling Gemini API:", error);
     return "Could not get a suggestion at this time. Please check your connection and API key.";
+  } finally {
+    // Always reset the guard when finished
+    isFetching = false;
   }
 };
