@@ -1,11 +1,12 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+/**
+ * This file contains the application's Firebase configuration object
+ * and initialises the connection to the Firebase project
+ * The configuration is hardcoded as per Firebase's official recommendation
+ * for client-side applications, where security is managed by server-side
+ * security rules rather than by obscuring the client API key
+ */
 const firebaseConfig = {
   apiKey: "AIzaSyAgrxmz6ZeRBXD_LqevU3Kw9vjakOMyCz4",
   authDomain: "choff-coffee-app.firebaseapp.com",
@@ -16,14 +17,7 @@ const firebaseConfig = {
   measurementId: "G-74Z7NN438G",
 };
 
-// START OF DIAGNOSTIC LOGGING
-console.log("--- Firebase Config Debug ---");
-console.log("Initialising Firebase with hardcoded config.");
-console.log("API Key being used:", firebaseConfig.apiKey);
-console.log("---------------------------");
-// END OF DIAGNOSTIC LOGGING
-
-// Initialize Firebase
+// Initialise the Firebase app with the configuration object
 const firebaseApp = initializeApp(firebaseConfig);
 
 export default firebaseApp;

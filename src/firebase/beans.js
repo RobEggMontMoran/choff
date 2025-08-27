@@ -20,21 +20,22 @@ import { auth } from "./auth";
 
 export const addBean = async (beanData) => {
   const user = auth.currentUser;
+  // Guard clause to ensure a user is authenticated
   if (!user) {
     throw new Error("No user is currently logged in.");
   }
 
   try {
-    // 'addDoc' - creates a new document with a unique ID
+    // Construct the new document with user data, a user ID for security, and a server timestamp
     await addDoc(collection(db, "beans"), {
-      ...beanData, // The data from the BeanEntryScreen form
-      userId: user.uid, // Tags the document with the user's ID
-      createdAt: serverTimestamp(), // Adds a timestamp
+      ...beanData,
+      userId: user.uid,
+      createdAt: serverTimestamp(),
     });
     console.log("Bean successfully saved to Firestore!");
   } catch (error) {
     console.error("Error saving bean to Firestore: ", error);
-    // Re-throws the error to screen as an alert
+    // Re-throw the error so it can be caught and displayed by the calling screen
     throw error;
   }
 };
@@ -51,12 +52,12 @@ export const getBeans = async () => {
 
   const beans = [];
   try {
-    // Creates a query against the 'beans' collection where the userId matches the current user's
+    // Create a query to get only the documents from the 'beans' collection that match the current user's ID
     const q = query(collection(db, "beans"), where("userId", "==", user.uid));
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // For each document, pushs its data and its unique ID into the array
+      // Combines the document data with its unique Firestore ID
       beans.push({ id: doc.id, ...doc.data() });
     });
 
@@ -72,7 +73,7 @@ export const getBeans = async () => {
  * Updates an existing bean document in Firestore
  * @param {string} beanId - The ID of the bean document to update
  * @param {object} beanData - The updated bean data from the form
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A Promise that resolves when the update is complete
  */
 export const updateBean = async (beanId, beanData) => {
   try {
@@ -88,7 +89,7 @@ export const updateBean = async (beanId, beanData) => {
 /**
  * Deletes a bean document from Firestore
  * @param {string} beanId - The ID of the bean document to delete
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A Promise that resolves when the document is deleted
  */
 export const deleteBean = async (beanId) => {
   try {
