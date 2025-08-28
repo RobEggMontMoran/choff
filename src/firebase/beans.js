@@ -32,7 +32,6 @@ export const addBean = async (beanData) => {
       userId: user.uid,
       createdAt: serverTimestamp(),
     });
-    console.log("Bean successfully saved to Firestore!");
   } catch (error) {
     console.error("Error saving bean to Firestore: ", error);
     // Re-throw the error so it can be caught and displayed by the calling screen
@@ -60,8 +59,6 @@ export const getBeans = async () => {
       // Combines the document data with its unique Firestore ID
       beans.push({ id: doc.id, ...doc.data() });
     });
-
-    console.log("Beans successfully fetched!");
     return beans;
   } catch (error) {
     console.error("Error fetching beans from Firestore: ", error);
@@ -79,7 +76,6 @@ export const updateBean = async (beanId, beanData) => {
   try {
     const beanRef = doc(db, "beans", beanId);
     await updateDoc(beanRef, beanData);
-    console.log("Bean successfully updated!");
   } catch (error) {
     console.error("Error updating bean: ", error);
     throw error;
@@ -94,7 +90,6 @@ export const updateBean = async (beanId, beanData) => {
 export const deleteBean = async (beanId) => {
   try {
     await deleteDoc(doc(db, "beans", beanId));
-    console.log("Bean successfully deleted!");
   } catch (error) {
     console.error("Error deleting bean: ", error);
     throw error;

@@ -31,7 +31,6 @@ export const addBrew = async (brewData) => {
       userId: user.uid,
       createdAt: serverTimestamp(),
     });
-    console.log("Brew successfully saved to Firestore!");
   } catch (error) {
     console.error("Error saving brew to Firestore: ", error);
     // Re-throw the error so it can be caught and displayed by the calling screen
@@ -59,8 +58,6 @@ export const getBrews = async () => {
       // Combines the document data with its unique Firestore ID
       brews.push({ id: doc.id, ...doc.data() });
     });
-
-    console.log("Brews successfully fetched!");
     return brews;
   } catch (error) {
     console.error("Error fetching brews from Firestore: ", error);
@@ -78,7 +75,6 @@ export const updateBrew = async (brewId, brewData) => {
   try {
     const brewRef = doc(db, "brews", brewId);
     await updateDoc(brewRef, brewData);
-    console.log("Brew successfully updated!");
   } catch (error) {
     console.error("Error updating brew: ", error);
     throw error;
@@ -93,7 +89,6 @@ export const updateBrew = async (brewId, brewData) => {
 export const deleteBrew = async (brewId) => {
   try {
     await deleteDoc(doc(db, "brews", brewId));
-    console.log("Brew successfully deleted!");
   } catch (error) {
     console.error("Error deleting brew: ", error);
     throw error;

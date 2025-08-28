@@ -1,12 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import global from "../styles/globalStyles";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-
-// To be removed and replaced with dynamic  **NB**
-import dummyBeans from "../data/dummyBeans";
-import dummyBrews from "../data/dummyBrews";
+import { getBeans } from "../src/firebase/beans";
+import { getBrews } from "../src/firebase/brews";
 
 /**
  * The HomeScreen serves as the main dashboard for an authenticated user
@@ -15,9 +14,39 @@ import dummyBrews from "../data/dummyBrews";
 const HomeScreen = () => {
   const navigation = useNavigation();
 
-  // Note: These stats currently use placeholder data for display purposes **NB**
-  const totalBeans = dummyBeans.length;
-  const totalBrews = dummyBrews.length;
+  // State to hold the fetched data and loading status
+  const [beans, setBeans] = useState([]);
+  const [brews, setBrews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetches data every time the screen comes into focus to keep stats up-to-date
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          // Fetch both beans and brews data in parallel for efficiency
+          const [fetchedBeans, fetchedBrews] = await Promise.all([getBeans(), getBrews()]);
+          setBeans(fetchedBeans);
+          setBrews(fetchedBrews);
+        } catch (error) {
+          console.error("Failed to fetch home screen data:", error);
+          Alert.alert("Error", "Could not load your data");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }, []),
+  );
+
+  // Display a loading indicator while the initial data is being fetched
+  if (isLoading) {
+    return (
+      <SafeAreaView style={[global.screenBase, { justifyContent: "center", alignItems: "center" }]}>
+        <ActivityIndicator size="large" color="saddlebrown" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={global.screenBase}>
@@ -33,12 +62,12 @@ const HomeScreen = () => {
         <View style={local.statsRow}>
           <View style={local.statBox}>
             <Text style={global.textLabelM}>Beans Logged</Text>
-            <Text style={global.headingM}>{totalBeans}</Text>
+            <Text style={global.headingM}>{beans.length}</Text>
           </View>
 
           <View style={local.statBox}>
             <Text style={global.textLabelM}>Brews Recorded</Text>
-            <Text style={global.headingM}>{totalBrews}</Text>
+            <Text style={global.headingM}>{brews.length}</Text>
           </View>
         </View>
 

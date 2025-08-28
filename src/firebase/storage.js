@@ -32,8 +32,6 @@ export const uploadImageAndGetDownloadURL = async (uri) => {
 
     // Retrieve the public, permanent URL for the file just uploaded
     const downloadURL = await getDownloadURL(storageRef);
-
-    console.log("Image uploaded! URL:", downloadURL);
     return downloadURL;
   } catch (error) {
     console.error("Error uploading image: ", error);
