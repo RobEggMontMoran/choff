@@ -23,19 +23,26 @@ import Timer from "../components/Timer";
 import DatePickerInput from "../components/DatePickerInput";
 import AiBaristaBlock from "../components/AiBaristaBlock";
 
+/**
+ * The BrewEntryScreen serves as both the creation and editing form for a brew
+ * It operates in two modes, determined by the `existingBrew` route parameter:
+ * - 'Add Mode': The form is empty, and the final action saves a new document
+ * - 'Edit Mode': The form is pre-populated with existing brew data, and the
+ * final actions are to update or delete the existing document
+ */
 const BrewEntryScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute(); // Hook to access route params
-  const existingBrew = route.params?.brew; // Check if a brew was passed
+  const route = useRoute();
+  const existingBrew = route.params?.brew;
 
-  // Menu visibility state
+  // State for controlling UI elements
   const [beanMenuVisible, setBeanMenuVisible] = useState(false);
   const [optionalSectionExpanded, setOptionalSectionExpanded] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initialise all form fields from the `existingBrew` prop if it exists, otherwise use default values
   // Data state
-  const [availableBeans, setAvailableBeans] = useState([]); // holds beans fetched from Firestore
-  // Initialisde selectedBeam from existingBrew if present
+  const [availableBeans, setAvailableBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState(
     existingBrew ? { id: existingBrew.beanId, name: existingBrew.beanName, roaster: existingBrew.roaster } : null,
   );
@@ -50,18 +57,13 @@ const BrewEntryScreen = () => {
   const [date, setDate] = useState(existingBrew?.date || new Date()); // Defaults to today's date
 
   // Optional fields
-  // const [aroma, setAroma] = useState(existingBrew?.tastingProfile?.aroma || 0);
-  // const [acidity, setAcidity] = useState(existingBrew?.tastingProfile?.acidity || 0);
-  // const [sweetness, setSweetness] = useState(existingBrew?.tastingProfile?.sweetness || 0);
-  // const [body, setBody] = useState(existingBrew?.tastingProfile?.body || 0);
-  // const [bitterness, setBitterness] = useState(existingBrew?.tastingProfile?.bitterness || 0);
   const [aroma, setAroma] = useState(existingBrew?.aroma || 0);
   const [flavourBalance, setFlavourBalance] = useState(existingBrew?.flavourBalance || 0);
   const [mouthfeel, setMouthfeel] = useState(existingBrew?.mouthfeel || 0);
   const [notes, setNotes] = useState(existingBrew?.notes || "");
   const [photoUrl, setPhotoUrl] = useState(existingBrew?.photoUrl || "");
 
-  // Fetch beans every time the screen comes into focus
+  // Fetches the list of available beans to populate the dropdown menu
   useFocusEffect(
     useCallback(() => {
       const fetchAvailableBeans = async () => {
@@ -76,11 +78,13 @@ const BrewEntryScreen = () => {
     }, []),
   );
 
+  // Handles selecting a bean from the dropdown menu
   const handleSelectBean = (bean) => {
     setSelectedBean(bean);
     setBeanMenuVisible(false);
   };
 
+  // Gathers all state variables into a single object for Firebase
   const getBrewDataFromState = () => ({
     beanId: selectedBean.id,
     beanName: selectedBean.name,
@@ -92,7 +96,6 @@ const BrewEntryScreen = () => {
     grindSize,
     rating: parseFloat(rating.toFixed(1)),
     date,
-    // tastingProfile: { aroma, acidity, sweetness, body, bitterness },
     aroma,
     flavourBalance,
     mouthfeel,
@@ -100,6 +103,7 @@ const BrewEntryScreen = () => {
     photoUrl,
   });
 
+  // Handles the submission of a new brew
   const handleAdd = async () => {
     if (!selectedBean) {
       Alert.alert("No Bean Selected", "Please select a bean for this brew.");
@@ -117,6 +121,7 @@ const BrewEntryScreen = () => {
     }
   };
 
+  // Handles updating an existing brew
   const handleUpdate = async () => {
     if (!existingBrew?.id) return;
     setIsSubmitting(true);
@@ -131,8 +136,10 @@ const BrewEntryScreen = () => {
     }
   };
 
+  // Handles deleting an existing brew
   const handleDelete = () => {
     if (!existingBrew?.id) return;
+    // Display a confirmation alert to prevent accidental deletion
     Alert.alert("Delete Brew", "Are you sure you want to delete this brew? This action cannot be undone.", [
       { text: "Cancel", style: "cancel" },
       {
@@ -153,33 +160,31 @@ const BrewEntryScreen = () => {
       },
     ]);
   };
-
+  // Handles the full image picking and uploading flow
   const handleImagePick = async () => {
-    // Ask for permission to access the media library
+    // First, ask for permission to access the user's media library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
       Alert.alert("Permission Denied", "You've refused to allow this app to access your photos!");
       return;
     }
 
-    // Launch the image picker.
+    // Launch the image picker with specific options for cropping and compression
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [1, 1], // Enforce a square aspect ratio
       quality: 0.5, // Compress the image to save space
     });
-
     if (pickerResult.canceled) {
       return;
     }
-
-    // If an image is selected, upload it and update the state
+    // If an image is selected, upload it via the storage service and update state
     if (pickerResult.assets && pickerResult.assets.length > 0) {
       const uri = pickerResult.assets[0].uri;
       try {
-        setIsSubmitting(true); // Show a loading indicator
+        setIsSubmitting(true);
         const downloadURL = await uploadImageAndGetDownloadURL(uri);
-        setPhotoUrl(downloadURL); // Update the state with the new URL
+        setPhotoUrl(downloadURL);
       } catch (error) {
         Alert.alert("Upload Failed", "Sorry, we couldn't upload your image.");
       } finally {
@@ -198,15 +203,17 @@ const BrewEntryScreen = () => {
               <Text style={global.subheadingM}>Log your Espresso Recipe</Text>
             </View>
 
-            {/* AI Component */}
+            {/* AI Assistant component, only visible in 'edit mode' */}
             {existingBrew && <AiBaristaBlock brewData={existingBrew} />}
 
             <View style={global.spacerM} />
 
+            {/* Card for mandatory recipe fields */}
             <Card style={local.card}>
               <Card.Content>
                 <Text style={local.cardTitle}>Recipe</Text>
 
+                {/* Dropdown menu to select a bean */}
                 <Menu
                   visible={beanMenuVisible}
                   onDismiss={() => setBeanMenuVisible(false)}
@@ -232,6 +239,8 @@ const BrewEntryScreen = () => {
                   ))}
                 </Menu>
 
+                {/* Sliders for core recipe variables */}
+                {/* Dose */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Dose: {dose.toFixed(1)}g</Text>
                   <Slider
@@ -247,6 +256,7 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
+                {/* Yield */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>
                     <Text style={local.sliderLabel}>Yield: {yieldAmount.toFixed(1)}g</Text>
@@ -264,6 +274,7 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
+                {/* Brew Time */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Time: {brewTime.toFixed(1)}s</Text>
                   <Slider
@@ -279,8 +290,10 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
+                {/* Reusable timer component */}
                 <Timer onTimeChange={setBrewTime} />
 
+                {/* Temperature */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>
                     <Text style={local.sliderLabel}>Temperature: {temperature.toFixed(1)}°C</Text>
@@ -298,6 +311,7 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
+                {/* Grind Size */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Grind Size: {grindSize}</Text>
                   <Slider
@@ -313,6 +327,7 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
+                {/* Overall Rating */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Overall Rating: {rating.toFixed(1)}/10</Text>
                   <Slider
@@ -328,13 +343,14 @@ const BrewEntryScreen = () => {
                   />
                 </View>
 
+                {/* Reusable component for date selection */}
                 <View>
                   <DatePickerInput label="Brew Date" dateValue={date} onDateChange={setDate} />
                 </View>
               </Card.Content>
             </Card>
 
-            {/* Accordion - Optional Data Input */}
+            {/* Collapsible accordion for optional fields */}
             <List.Accordion
               title="Optional Feedback & Photo"
               titleStyle={local.accordionTitle}
@@ -343,10 +359,9 @@ const BrewEntryScreen = () => {
               onPress={() => setOptionalSectionExpanded(!optionalSectionExpanded)}
               left={(props) => <List.Icon {...props} icon="playlist-edit" color="saddlebrown" />}
             >
-              {/* <Card style={local.card}> */}
               <Card style={[local.card, { marginTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }]}>
                 <Card.Content>
-                  {/* <Card.Content style={{ paddingHorizontal: 0 }}> */}
+                  {/* Aroma */}
                   <View style={local.input}>
                     <Text style={local.sliderLabel}>Aroma: {aroma}/10</Text>
                     <Text style={local.helperText}>The smell or fragrance of the brew</Text>
@@ -362,63 +377,8 @@ const BrewEntryScreen = () => {
                       thumbTintColor="peru"
                     />
                   </View>
-                  {/* <View style={local.input}>
-                    <Text style={local.sliderLabel}>Acidity: {acidity}</Text>
-                    <Slider
-                      style={{ width: "100%", height: 40 }}
-                      minimumValue={0}
-                      maximumValue={10}
-                      step={1}
-                      value={acidity}
-                      onValueChange={setAcidity}
-                      minimumTrackTintColor="peru"
-                      maximumTrackTintColor="#000000"
-                      thumbTintColor="peru"
-                    />
-                  </View>
-                  <View style={local.input}>
-                    <Text style={local.sliderLabel}>Sweetness: {sweetness}</Text>
-                    <Slider
-                      style={{ width: "100%", height: 40 }}
-                      minimumValue={0}
-                      maximumValue={10}
-                      step={1}
-                      value={sweetness}
-                      onValueChange={setSweetness}
-                      minimumTrackTintColor="peru"
-                      maximumTrackTintColor="#000000"
-                      thumbTintColor="peru"
-                    />
-                  </View>
-                  <View style={local.input}>
-                    <Text style={local.sliderLabel}>Body: {body}</Text>
-                    <Slider
-                      style={{ width: "100%", height: 40 }}
-                      minimumValue={0}
-                      maximumValue={10}
-                      step={1}
-                      value={body}
-                      onValueChange={setBody}
-                      minimumTrackTintColor="peru"
-                      maximumTrackTintColor="#000000"
-                      thumbTintColor="peru"
-                    />
-                  </View>
-                  <View style={local.input}>
-                    <Text style={local.sliderLabel}>Bitterness: {bitterness}</Text>
-                    <Slider
-                      style={{ width: "100%", height: 40 }}
-                      minimumValue={0}
-                      maximumValue={10}
-                      step={1}
-                      value={bitterness}
-                      onValueChange={setBitterness}
-                      minimumTrackTintColor="peru"
-                      maximumTrackTintColor="#000000"
-                      thumbTintColor="peru"
-                    />
-                  </View> */}
 
+                  {/* Flavour Balance */}
                   <View style={local.input}>
                     <Text style={local.sliderLabel}>Flavour Balance: {flavourBalance}/10</Text>
                     <Text style={local.helperText}>The balance of sweetness, acidity, and bitterness</Text>
@@ -435,6 +395,7 @@ const BrewEntryScreen = () => {
                     />
                   </View>
 
+                  {/* Mouthfeel */}
                   <View style={local.input}>
                     <Text style={local.sliderLabel}>Mouthfeel: {mouthfeel}/10</Text>
                     <Text style={local.helperText}>The texture or body of the coffee</Text>
@@ -451,6 +412,7 @@ const BrewEntryScreen = () => {
                     />
                   </View>
 
+                  {/* Text input for Comments */}
                   <TextInput
                     label="Comments"
                     value={notes}
@@ -461,6 +423,7 @@ const BrewEntryScreen = () => {
                     numberOfLines={4}
                   />
 
+                  {/* Button to pick an image */}
                   <Button
                     icon="camera"
                     mode="outlined"
@@ -472,7 +435,7 @@ const BrewEntryScreen = () => {
                     {photoUrl ? "Change Photo" : "Add Photo"}
                   </Button>
 
-                  {/* Displays a preview image once a photo is uploaded */}
+                  {/* Display a preview of the selected or existing image */}
                   {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
                 </Card.Content>
               </Card>
@@ -480,6 +443,7 @@ const BrewEntryScreen = () => {
 
             <View style={{ height: 20 }} />
 
+            {/* Conditionally render action buttons based on whether we are adding or editing */}
             {existingBrew ? (
               <View style={local.buttonRow}>
                 <Button

@@ -4,12 +4,18 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
+// To be removed and replaced with dynamic  **NB**
 import dummyBeans from "../data/dummyBeans";
 import dummyBrews from "../data/dummyBrews";
 
+/**
+ * The HomeScreen serves as the main dashboard for an authenticated user
+ * It displays key statistics and provides the primary navigation to other screens
+ */
 const HomeScreen = () => {
   const navigation = useNavigation();
 
+  // Note: These stats currently use placeholder data for display purposes **NB**
   const totalBeans = dummyBeans.length;
   const totalBrews = dummyBrews.length;
 
@@ -23,13 +29,7 @@ const HomeScreen = () => {
 
         <View style={global.spacerM} />
 
-        {/* CTA
-      <TouchableOpacity style={local.ctaButton} onPress={() => navigation.navigate("BrewEntry")}>
-        <Text style={local.ctaText}>Start a New Brew</Text>
-      </TouchableOpacity>
-      <View style={global.spacerL} /> */}
-
-        {/* Stats Section */}
+        {/* Section to display user's key statistics */}
         <View style={local.statsRow}>
           <View style={local.statBox}>
             <Text style={global.textLabelM}>Beans Logged</Text>
@@ -45,18 +45,21 @@ const HomeScreen = () => {
         <View style={global.spacerL} />
       </View>
 
-      {/* Quick Links */}
+      {/* Main navigation footer */}
+      {/* Bean Library Screen */}
       <View style={local.footer}>
         <TouchableOpacity style={local.quickLink} onPress={() => navigation.navigate("BeanLibrary")}>
           <Ionicons name="book" size={30} color="saddlebrown" />
           <Text style={global.subheadingM}>Beans</Text>
         </TouchableOpacity>
 
+        {/* Brew History Screen */}
         <TouchableOpacity style={local.quickLink} onPress={() => navigation.navigate("BrewHistory")}>
           <Ionicons name="cafe" size={30} color="saddlebrown" />
           <Text style={global.subheadingM}>Brews</Text>
         </TouchableOpacity>
 
+        {/* Profile Page (Currently Only contains Log-Out button) */}
         <TouchableOpacity style={local.quickLink} onPress={() => navigation.navigate("Profile")}>
           <Ionicons name="person" size={30} color="saddlebrown" />
           <Text style={global.subheadingM}>Profile</Text>
@@ -67,18 +70,6 @@ const HomeScreen = () => {
 };
 
 const local = StyleSheet.create({
-  // ctaButton: {
-  //   backgroundColor: "saddlebrown",
-  //   paddingVertical: 16,
-  //   paddingHorizontal: 30,
-  //   borderRadius: 12,
-  //   alignItems: "center",
-  // },
-  // ctaText: {
-  //   color: "white",
-  //   fontSize: 20,
-  //   fontWeight: "bold",
-  // },
   statsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -93,16 +84,10 @@ const local = StyleSheet.create({
     borderWidth: 1,
     borderColor: "saddlebrown",
   },
-  // quickLinksRow: {
-  //   flexDirection: "row",
-  //   justifyContent: "space-evenly",
-  //   marginTop: 20,
-  // },
   footer: {
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 8,
-    // borderTopWidth: 1,
     borderWidth: 1,
     borderColor: "saddlebrown",
     backgroundColor: "oldlace",

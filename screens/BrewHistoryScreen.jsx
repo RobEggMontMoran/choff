@@ -8,14 +8,25 @@ import { Ionicons } from "@expo/vector-icons";
 import { getBrews } from "../src/firebase/brews";
 import SearchSortBar from "../components/SearchSortBar";
 
+/**
+ * The BrewHistoryScreen fetches and displays a list of all coffee brews
+ * belonging to the current user. It allows for searching, sorting, and
+ * navigating to add a new brew or edit an existing one
+ * Key State:
+ * - brews: The raw array of brew objects fetched from Firestore
+ * - isLoading: Controls the initial loading indicator
+ * - searchQuery: The current text in the search bar
+ * - sortOption: The currently selected sorting method
+ */
 const BrewHistoryScreen = () => {
   const navigation = useNavigation();
   const [brews, setBrews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // state for search
-  const [sortOption, setSortOption] = useState("date_desc"); // state for sort
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("date_desc");
 
-  // re-fetches data every time the screen loads
+  // Fetches data every time the screen comes into focus using useFocusEffect
+  // This ensures the list is always fresh, reflecting any additions or edits
   useFocusEffect(
     useCallback(() => {
       const fetchBrews = async () => {
@@ -26,39 +37,39 @@ const BrewHistoryScreen = () => {
           console.error("Failed to fetch brews:", error);
           Alert.alert("Error", "Could not fetch your brew history.");
         } finally {
+          // Only show the full-screen loader on the very first load
           if (isLoading) {
             setIsLoading(false);
           }
         }
       };
-
       fetchBrews();
-    }, []),
+    }, []), // An empty dependency array ensures this callback is created only once
   );
 
-  // filtering and sorting logic for brews
+  // Memoised function to process the brews for display
+  // This is a performance optimisation that prevents the filtering and sorting
+  // logic from re-running on every single render
   const processedBrews = useMemo(() => {
     let filtered = brews;
 
-    // filter the search query (checking beanName and brewMethod)
+    // First, filter the list based on the search query
     if (searchQuery) {
-      filtered = brews.filter(
-        (brew) =>
-          // Search by the bean's name
-          brew.beanName.toLowerCase().includes(searchQuery.toLowerCase()),
-        // ||
-        // // search by brew notes
-        // (brew.notes && brew.notes.toLowerCase().includes(searchQuery.toLowerCase())),
+      filtered = brews.filter((brew) =>
+        // Search by the associated bean's name
+        brew.beanName.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
-    // Then, sort the filtered list
+    // Then, sort the filtered list based on the selected sort option
     const sorted = [...filtered].sort((a, b) => {
+      // Helper function to safely get a comparable date value (as a number)
+      // This prevents crashes if the date field is missing from legacy data
       const getDateValue = (brew) => {
         if (brew && brew.date && typeof brew.date.toDate === "function") {
           return brew.date.toDate().getTime();
         }
-        return 0;
+        return 0; // Sorts items without a date to the end
       };
 
       switch (sortOption) {
@@ -77,16 +88,17 @@ const BrewHistoryScreen = () => {
     return sorted;
   }, [brews, searchQuery, sortOption]);
 
-  // Card navigation - navigates to the BrewEntry screen and passes the brew data
+  // Navigates to the entry screen in 'edit mode' with the selected brew's data
   const handleCardPress = (brew) => {
     navigation.navigate("BrewEntry", { brew });
   };
 
-  // Add Brew navigation
+  // Navigates to the entry screen in 'add mode'
   const handleAddPress = () => {
     navigation.navigate("BrewEntry");
   };
 
+  // Display a loading indicator on the initial app load
   if (isLoading) {
     return (
       <SafeAreaView style={[global.screenBase, { justifyContent: "center", alignItems: "center" }]}>
@@ -104,7 +116,7 @@ const BrewHistoryScreen = () => {
 
       <View style={global.spacerS} />
 
-      {/* SearchSortBar component */}
+      {/* Reusable component for search and sort controls */}
       <SearchSortBar
         placeholder="Search brews..."
         searchQuery={searchQuery}
@@ -113,6 +125,7 @@ const BrewHistoryScreen = () => {
         onSortOptionChange={setSortOption}
       />
 
+      {/* Conditionally render the list or an empty state message */}
       {brews.length === 0 ? (
         <View style={global.alignCenter}>
           <View style={global.spacerXL} />

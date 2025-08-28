@@ -8,15 +8,25 @@ import { Ionicons } from "@expo/vector-icons";
 import { getBeans } from "../src/firebase/beans";
 import SearchSortBar from "../components/SearchSortBar";
 
+/**
+ * The BeanLibraryScreen fetches and displays a list of all coffee beans
+ * belonging to the current user. It allows for searching, sorting, and
+ * navigating to add a new bean or edit an existing one
+ * Key State:
+ * - beans: The raw array of bean objects fetched from Firestore
+ * - isLoading: Controls the initial loading indicator
+ * - searchQuery: The current text in the search bar
+ * - sortOption: The currently selected sorting method
+ */
 const BeanLibraryScreen = () => {
   const navigation = useNavigation();
   const [beans, setBeans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOption, setSortOption] = useState("date_desc"); // sorting defaults to newest added first
+  const [sortOption, setSortOption] = useState("date_desc");
 
-  // useFocusEffect re-fetches data every time the screen loads
-  // This ensures the list is updated after adding a new bean
+  // Fetches data every time the screen comes into focus using useFocusEffect
+  // This ensures the list is always fresh, reflecting any additions or edits
   useFocusEffect(
     useCallback(() => {
       const fetchBeans = async () => {
@@ -27,20 +37,23 @@ const BeanLibraryScreen = () => {
           console.error("Failed to fetch beans:", error);
           Alert.alert("Error", "Could not fetch your beans. Please try again later.");
         } finally {
-          // Ensure loading is set to false after the first fetch
+          // Only show the full-screen loader on the very first load
           if (isLoading) {
             setIsLoading(false);
           }
         }
       };
-
       fetchBeans();
-    }, []), // The empty dependency array means the fetch logic is created once
+    }, []), // An empty dependency array ensures this callback is created only once
   );
 
+  // Memoised function to process the beans for display
+  // This is a performance optimisation that prevents the filtering and sorting
+  // logic from re-running on every single render
   const processedBeans = useMemo(() => {
     let filtered = beans;
 
+    // First, filter the list based on the search query
     if (searchQuery) {
       filtered = beans.filter(
         (bean) =>
@@ -50,15 +63,15 @@ const BeanLibraryScreen = () => {
       );
     }
 
+    // Then, sort the filtered list based on the selected sort option
     const sorted = [...filtered].sort((a, b) => {
       // Helper function to safely get a comparable date value (as a number)
+      // This prevents crashes if roastDate is missing from legacy data
       const getDateValue = (bean) => {
-        // Check if roastDate exists AND if it has the toDate method
         if (bean && bean.roastDate && typeof bean.roastDate.toDate === "function") {
-          return bean.roastDate.toDate().getTime(); // Return the numeric timestamp
+          return bean.roastDate.toDate().getTime();
         }
-        // If not, return a very old date (0) to sort it to the end
-        return 0;
+        return 0; // Sorts items without a date to the end
       };
 
       switch (sortOption) {
@@ -73,21 +86,20 @@ const BeanLibraryScreen = () => {
           return getDateValue(b) - getDateValue(a);
       }
     });
-
     return sorted;
   }, [beans, searchQuery, sortOption]);
 
-  // Card navigation
+  // Navigates to the entry screen in 'edit mode' with the selected bean's data
   const handleCardPress = (bean) => {
     navigation.navigate("BeanEntry", { bean });
   };
 
-  // Add Bean navigation
+  // Navigates to the entry screen in 'add mode'
   const handleAddPress = () => {
     navigation.navigate("BeanEntry");
   };
 
-  // Shows a loading spinner on the initial load
+  // Display a loading indicator on the initial app load
   if (isLoading) {
     return (
       <SafeAreaView style={[global.screenBase, { justifyContent: "center", alignItems: "center" }]}>
@@ -105,7 +117,7 @@ const BeanLibraryScreen = () => {
 
       <View style={global.spacerS} />
 
-      {/* SearchSortBar component */}
+      {/* Reusable component for search and sort controls */}
       <SearchSortBar
         placeholder="Search beans..."
         searchQuery={searchQuery}
@@ -114,7 +126,7 @@ const BeanLibraryScreen = () => {
         onSortOptionChange={setSortOption}
       />
 
-      {/* Message for empty lists */}
+      {/* Conditionally render the list or an empty state message */}
       {beans.length === 0 ? (
         <View style={global.alignCenter}>
           <View style={global.spacerXL} />
@@ -139,7 +151,7 @@ const BeanLibraryScreen = () => {
         />
       )}
 
-      {/* Add new bean button */}
+      {/* Floating action button to add a new bean */}
       <TouchableOpacity style={local.floatingButton} onPress={handleAddPress}>
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>

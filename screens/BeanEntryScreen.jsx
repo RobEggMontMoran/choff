@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -20,25 +20,30 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadImageAndGetDownloadURL } from "../src/firebase/storage";
 import DatePickerInput from "../components/DatePickerInput";
 
+/**
+ * The BeanEntryScreen serves as both the creation and editing form for a bean
+ * It operates in two modes, determined by the `existingBean` route parameter:
+ * - 'Add Mode': The form is empty, and the final action saves a new document
+ * - 'Edit Mode': The form is pre-populated with existing bean data, and the
+ * final actions are to update or delete the existing document
+ */
 const BeanEntryScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute(); // Hook to access route params
-  const existingBean = route.params?.bean; // Check if a bean was passed
-  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
+  const route = useRoute();
+  const existingBean = route.params?.bean;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // State Initialization - initialize the state directly from 'existingBean' - if it exists.
+  // Initialise all form fields from the `existingBean` prop if it exists, otherwise use default values
   // Mandatory fields
   const [name, setName] = useState(existingBean?.name || "");
   const [roaster, setRoaster] = useState(existingBean?.roaster || "");
   const [origin, setOrigin] = useState(existingBean?.origin || "");
-
   const [roastDate, setRoastDate] = useState(existingBean?.roastDate || new Date());
   const [rating, setRating] = useState(existingBean?.rating || 0);
 
   // Optional fields
   const [roastType, setRoastType] = useState(existingBean?.roastType || "");
   const [blend, setBlend] = useState(existingBean?.blend || "");
-
   const [processMethod, setProcessMethod] = useState(existingBean?.processMethod || "");
   const [bagSize, setBagSize] = useState(existingBean?.bagSize || 0);
   const [price, setPrice] = useState(existingBean?.price || 0);
@@ -47,19 +52,20 @@ const BeanEntryScreen = () => {
   const [userNotes, setUserNotes] = useState(existingBean?.userNotes || "");
   const [photoUrl, setPhotoUrl] = useState(existingBean?.photoUrl || "");
 
-  // Menu visibility state
+  // State to control visibility of the dropdown menus
   const [roastMenuVisible, setRoastMenuVisible] = useState(false);
   const [blendMenuVisible, setBlendMenuVisible] = useState(false);
   const [processMenuVisible, setProcessMenuVisible] = useState(false);
 
-  // Flavour profile options
-  // *NB* Possibly add custom option later
+  // Hardcoded list of flavour profile tags
   const availableFlavours = ["Fruity", "Nutty", "Chocolatey", "Floral", "Earthy", "Sweet", "Citrus", "Smokey", "Tart"];
 
+  // Adds or removes a flavour from the flavourProfile array
   const toggleFlavour = (flavour) => {
     setFlavourProfile((prev) => (prev.includes(flavour) ? prev.filter((f) => f !== flavour) : [...prev, flavour]));
   };
 
+  // Gathers all state variables into a single object for Firebase
   const getBeanDataFromState = () => ({
     name,
     roaster,
@@ -77,7 +83,9 @@ const BeanEntryScreen = () => {
     photoUrl,
   });
 
+  // Handles the submission of a new bean
   const handleAdd = async () => {
+    // Basic validation to ensure mandatory fields are filled
     if (!name || !roaster || !origin || !roastDate) {
       Alert.alert("Missing Details", "Please fill in all mandatory fields.");
       return;
@@ -94,6 +102,7 @@ const BeanEntryScreen = () => {
     }
   };
 
+  // Handles updating an existing bean
   const handleUpdate = async () => {
     if (!existingBean?.id) return;
     setIsSubmitting(true);
@@ -108,9 +117,10 @@ const BeanEntryScreen = () => {
     }
   };
 
+  // Handles deleting an existing bean
   const handleDelete = () => {
     if (!existingBean?.id) return;
-    // Confirmation alert to prevent accidental deletion
+    // Display a confirmation alert to prevent accidental deletion
     Alert.alert("Delete Bean", "Are you sure you want to delete this bean? This action cannot be undone.", [
       { text: "Cancel", style: "cancel" },
       {
@@ -132,32 +142,31 @@ const BeanEntryScreen = () => {
     ]);
   };
 
+  // Handles the full image picking and uploading flow
   const handleImagePick = async () => {
-    // Ask for permission to access the media library.
+    // First, ask for permission to access the user's media library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
       Alert.alert("Permission Denied", "You've refused to allow this app to access your photos!");
       return;
     }
 
-    // Launch the image picker.
+    // Launch the image picker with specific options for cropping and compression
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [1, 1], // Enforce a square aspect ratio
       quality: 0.5, // Compress the image to save space
     });
-
     if (pickerResult.canceled) {
       return;
     }
-
-    // If an image is selected, upload it and update the state.
+    // If an image is selected, upload it via the storage service and update state
     if (pickerResult.assets && pickerResult.assets.length > 0) {
       const uri = pickerResult.assets[0].uri;
       try {
-        setIsSubmitting(true); // Show a loading indicator
+        setIsSubmitting(true);
         const downloadURL = await uploadImageAndGetDownloadURL(uri);
-        setPhotoUrl(downloadURL); // Update the state with the new URL
+        setPhotoUrl(downloadURL);
       } catch (error) {
         Alert.alert("Upload Failed", "Sorry, we couldn't upload your image.");
       } finally {
@@ -172,19 +181,16 @@ const BeanEntryScreen = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
             <View style={global.alignCenter}>
-              {/* <Text style={global.headingL}>Add New Bean</Text> */}
               <Text style={global.headingL}>{existingBean ? "Edit Bean" : "Add New Bean"}</Text>
               <Text style={global.subheadingM}>Log your Espresso Bean Details</Text>
             </View>
             <View style={global.spacerM} />
 
-            {/* Mandatory Inputs */}
+            {/* Card for mandatory input fields */}
             <Card style={local.card}>
               <Card.Content>
                 <Text style={local.cardTitle}>Mandatory Details</Text>
-
                 <TextInput label="Bean Name" value={name} onChangeText={setName} style={local.input} mode="outlined" />
-
                 <TextInput
                   label="Roaster"
                   value={roaster}
@@ -194,10 +200,12 @@ const BeanEntryScreen = () => {
                 />
                 <TextInput label="Origin" value={origin} onChangeText={setOrigin} style={local.input} mode="outlined" />
 
+                {/* Reusable component for date selection */}
                 <View>
                   <DatePickerInput label="Roast Date" dateValue={roastDate} onDateChange={setRoastDate} />
                 </View>
 
+                {/* Slider for overall rating */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Rating: {rating.toFixed(1)} / 10</Text>
                   <Slider
@@ -215,11 +223,12 @@ const BeanEntryScreen = () => {
               </Card.Content>
             </Card>
 
-            {/* Optional Inputs */}
+            {/* Card for optional input fields */}
             <Card style={local.card}>
               <Card.Content>
                 <Text style={local.cardTitle}>Optional Details</Text>
 
+                {/* Dropdown menu for Roast Type */}
                 <Menu
                   visible={roastMenuVisible}
                   onDismiss={() => setRoastMenuVisible(false)}
@@ -259,6 +268,7 @@ const BeanEntryScreen = () => {
                   />
                 </Menu>
 
+                {/* Dropdown menu for Blend Type */}
                 <Menu
                   visible={blendMenuVisible}
                   onDismiss={() => setBlendMenuVisible(false)}
@@ -298,6 +308,7 @@ const BeanEntryScreen = () => {
                   />
                 </Menu>
 
+                {/* Dropdown menu for Process Method */}
                 <Menu
                   visible={processMenuVisible}
                   onDismiss={() => setProcessMenuVisible(false)}
@@ -337,6 +348,7 @@ const BeanEntryScreen = () => {
                   />
                 </Menu>
 
+                {/* Slider for Bag Size */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Bag Size: {bagSize}g</Text>
                   <Slider
@@ -352,6 +364,7 @@ const BeanEntryScreen = () => {
                   />
                 </View>
 
+                {/* Slider for Price */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Price: €{price.toFixed(2)}</Text>
                   <Slider
@@ -367,6 +380,7 @@ const BeanEntryScreen = () => {
                   />
                 </View>
 
+                {/* Chip group for Flavour Profile */}
                 <View style={local.input}>
                   <Text style={local.sliderLabel}>Flavour Profile</Text>
                   <View style={local.chipContainer}>
@@ -384,11 +398,13 @@ const BeanEntryScreen = () => {
                   </View>
                 </View>
 
+                {/* Switch for Decaf */}
                 <View style={local.switchContainer}>
                   <Text style={local.sliderLabel}>Decaf?</Text>
                   <Switch value={isDecaf} onValueChange={setIsDecaf} color="peru" />
                 </View>
 
+                {/* Text input for Comments */}
                 <TextInput
                   label="Comments"
                   value={userNotes}
@@ -399,6 +415,7 @@ const BeanEntryScreen = () => {
                   numberOfLines={4}
                 />
 
+                {/* Button to pick an image */}
                 <Button
                   icon="camera"
                   mode="outlined"
@@ -410,12 +427,12 @@ const BeanEntryScreen = () => {
                   {photoUrl ? "Change Photo" : "Add Photo"}
                 </Button>
 
-                {/* This will display the preview image once a photo is uploaded */}
+                {/* Display a preview of the selected or existing image */}
                 {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
               </Card.Content>
             </Card>
 
-            {/* Action buttons (conditional rendering) */}
+            {/* Conditionally render action buttons based on whether we are adding or editing */}
             {existingBean ? (
               <View style={local.buttonRow}>
                 <Button
