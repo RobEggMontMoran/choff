@@ -48,10 +48,10 @@ const BrewEntryScreen = () => {
   );
 
   // Mandatory fields
-  const [dose, setDose] = useState(existingBrew?.dose || 8);
+  const [dose, setDose] = useState(existingBrew?.dose || 14);
   const [yieldAmount, setYieldAmount] = useState(existingBrew?.yieldAmount || 20);
   const [brewTime, setBrewTime] = useState(existingBrew?.brewTime || 0);
-  const [temperature, setTemperature] = useState(existingBrew?.temperature || 85);
+  const [temperature, setTemperature] = useState(existingBrew?.temperature || 88);
   const [grindSize, setGrindSize] = useState(existingBrew?.grindSize || 1);
   const [rating, setRating] = useState(existingBrew?.rating || 0);
   const [date, setDate] = useState(existingBrew?.date || new Date()); // Defaults to today's date
@@ -195,7 +195,7 @@ const BrewEntryScreen = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerStyle={global.scrollContent} keyboardShouldPersistTaps="handled">
             <View style={global.alignCenter}>
               <Text style={global.headingL}>{existingBrew ? "Edit Brew" : "Add New Brew"}</Text>
               <Text style={global.subheadingM}>Log your Espresso Recipe</Text>
@@ -207,9 +207,9 @@ const BrewEntryScreen = () => {
             <View style={global.spacerM} />
 
             {/* Card for mandatory recipe fields */}
-            <Card style={local.card}>
+            <Card style={global.card}>
               <Card.Content>
-                <Text style={local.cardTitle}>Recipe</Text>
+                <Text style={global.cardTitle}>Recipe</Text>
 
                 {/* Dropdown menu to select a bean */}
                 <Menu
@@ -221,7 +221,7 @@ const BrewEntryScreen = () => {
                       icon="coffee"
                       mode="outlined"
                       onPress={() => setBeanMenuVisible(true)}
-                      style={local.input}
+                      style={global.input}
                       textColor="saddlebrown"
                     >
                       {selectedBean ? `${selectedBean.name} (${selectedBean.roaster})` : "Select a Bean"}
@@ -239,8 +239,8 @@ const BrewEntryScreen = () => {
 
                 {/* Sliders for core recipe variables */}
                 {/* Dose */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Dose: {dose.toFixed(1)}g</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Dose: {dose.toFixed(1)}g</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={14}
@@ -255,10 +255,8 @@ const BrewEntryScreen = () => {
                 </View>
 
                 {/* Yield */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>
-                    <Text style={local.sliderLabel}>Yield: {yieldAmount.toFixed(1)}g</Text>
-                  </Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Yield: {yieldAmount.toFixed(1)}g</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={20}
@@ -273,8 +271,8 @@ const BrewEntryScreen = () => {
                 </View>
 
                 {/* Brew Time */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Time: {brewTime.toFixed(1)}s</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Time: {brewTime.toFixed(1)}s</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
@@ -292,10 +290,8 @@ const BrewEntryScreen = () => {
                 <Timer onTimeChange={setBrewTime} />
 
                 {/* Temperature */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>
-                    <Text style={local.sliderLabel}>Temperature: {temperature.toFixed(1)}°C</Text>
-                  </Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Temperature: {temperature.toFixed(1)}°C</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={88}
@@ -310,8 +306,8 @@ const BrewEntryScreen = () => {
                 </View>
 
                 {/* Grind Size */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Grind Size: {grindSize}</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Grind Size: {grindSize}</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={1}
@@ -326,8 +322,8 @@ const BrewEntryScreen = () => {
                 </View>
 
                 {/* Overall Rating */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Overall Rating: {rating.toFixed(1)}/10</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Overall Rating: {rating.toFixed(1)}/10</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
@@ -357,11 +353,11 @@ const BrewEntryScreen = () => {
               onPress={() => setOptionalSectionExpanded(!optionalSectionExpanded)}
               left={(props) => <List.Icon {...props} icon="playlist-edit" color="saddlebrown" />}
             >
-              <Card style={[local.card, { marginTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }]}>
+              <Card style={[global.card, { marginTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }]}>
                 <Card.Content>
                   {/* Aroma */}
-                  <View style={local.input}>
-                    <Text style={local.sliderLabel}>Aroma: {aroma}/10</Text>
+                  <View style={global.input}>
+                    <Text style={global.sliderLabel}>Aroma: {aroma}/10</Text>
                     <Text style={local.helperText}>The smell or fragrance of the brew</Text>
                     <Slider
                       style={{ width: "100%", height: 40 }}
@@ -377,8 +373,8 @@ const BrewEntryScreen = () => {
                   </View>
 
                   {/* Flavour Balance */}
-                  <View style={local.input}>
-                    <Text style={local.sliderLabel}>Flavour Balance: {flavourBalance}/10</Text>
+                  <View style={global.input}>
+                    <Text style={global.sliderLabel}>Flavour Balance: {flavourBalance}/10</Text>
                     <Text style={local.helperText}>The balance of sweetness, acidity, and bitterness</Text>
                     <Slider
                       style={{ width: "100%", height: 40 }}
@@ -394,8 +390,8 @@ const BrewEntryScreen = () => {
                   </View>
 
                   {/* Mouthfeel */}
-                  <View style={local.input}>
-                    <Text style={local.sliderLabel}>Mouthfeel: {mouthfeel}/10</Text>
+                  <View style={global.input}>
+                    <Text style={global.sliderLabel}>Mouthfeel: {mouthfeel}/10</Text>
                     <Text style={local.helperText}>The texture or body of the coffee</Text>
                     <Slider
                       style={{ width: "100%", height: 40 }}
@@ -415,7 +411,7 @@ const BrewEntryScreen = () => {
                     label="Comments"
                     value={notes}
                     onChangeText={setNotes}
-                    style={local.input}
+                    style={global.input}
                     mode="outlined"
                     multiline
                     numberOfLines={4}
@@ -426,7 +422,7 @@ const BrewEntryScreen = () => {
                     icon="camera"
                     mode="outlined"
                     onPress={handleImagePick}
-                    style={local.input}
+                    style={global.input}
                     textColor="saddlebrown"
                     disabled={isSubmitting}
                   >
@@ -434,7 +430,7 @@ const BrewEntryScreen = () => {
                   </Button>
 
                   {/* Display a preview of the selected or existing image */}
-                  {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
+                  {photoUrl ? <Image source={{ uri: photoUrl }} style={global.imagePreview} /> : null}
                 </Card.Content>
               </Card>
             </List.Accordion>
@@ -443,11 +439,11 @@ const BrewEntryScreen = () => {
 
             {/* Conditionally render action buttons based on whether we are adding or editing */}
             {existingBrew ? (
-              <View style={local.buttonRow}>
+              <View style={global.buttonRow}>
                 <Button
                   mode="outlined"
                   onPress={handleDelete}
-                  style={local.deleteButton}
+                  style={global.deleteButton}
                   textColor="firebrick"
                   loading={isSubmitting}
                   disabled={isSubmitting}
@@ -457,7 +453,7 @@ const BrewEntryScreen = () => {
                 <Button
                   mode="contained"
                   onPress={handleUpdate}
-                  style={local.updateButton}
+                  style={global.updateButton}
                   buttonColor="peru"
                   loading={isSubmitting}
                   disabled={isSubmitting}
@@ -466,7 +462,7 @@ const BrewEntryScreen = () => {
                 </Button>
               </View>
             ) : (
-              <Button mode="contained" onPress={handleAdd} style={local.button} buttonColor="peru">
+              <Button mode="contained" onPress={handleAdd} style={global.button} buttonColor="peru">
                 Save Brew
               </Button>
             )}
@@ -478,33 +474,6 @@ const BrewEntryScreen = () => {
 };
 
 const local = StyleSheet.create({
-  scrollContent: {
-    padding: 16,
-    backgroundColor: "blanchedalmond",
-  },
-  card: {
-    marginBottom: 20,
-    backgroundColor: "oldlace",
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "saddlebrown",
-  },
-  input: {
-    marginBottom: 16,
-    backgroundColor: "oldlace",
-  },
-  button: {
-    marginTop: 16,
-    marginBottom: 60,
-  },
-  sliderLabel: {
-    fontSize: 16,
-    color: "saddlebrown",
-    marginBottom: 8,
-  },
   accordion: {
     backgroundColor: "oldlace",
     borderRadius: 12,
@@ -514,35 +483,6 @@ const local = StyleSheet.create({
   accordionTitle: {
     color: "saddlebrown",
     fontWeight: "bold",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 16,
-    marginBottom: 60,
-  },
-  deleteButton: {
-    flex: 1,
-    marginRight: 8,
-    borderColor: "firebrick",
-  },
-  updateButton: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  imagePreview: {
-    width: 150,
-    height: 150,
-    borderRadius: 12,
-    alignSelf: "center",
-    marginVertical: 16,
-    borderWidth: 1,
-    borderColor: "peru",
-  },
-  sliderLabel: {
-    fontSize: 16,
-    color: "saddlebrown",
-    marginBottom: 8,
   },
   helperText: {
     fontSize: 12,

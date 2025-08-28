@@ -141,45 +141,22 @@ const BeanLibraryScreen = () => {
           data={processedBeans}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={local.cardWrapper}>
+            <View style={global.cardWrapper}>
               <BeanCard bean={item} onPress={() => handleCardPress(item)} />
             </View>
           )}
-          contentContainerStyle={local.listSpacing}
+          contentContainerStyle={global.listSpacing}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<Text style={local.noResultsText}>No beans match your search.</Text>}
+          ListEmptyComponent={<Text style={global.noResultsText}>No beans match your search.</Text>}
         />
       )}
 
       {/* Floating action button to add a new bean */}
-      <TouchableOpacity style={local.floatingButton} onPress={handleAddPress}>
+      <TouchableOpacity style={global.floatingButton} onPress={handleAddPress}>
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
-
-const local = StyleSheet.create({
-  cardWrapper: {
-    marginBottom: 12,
-  },
-  listSpacing: {
-    paddingBottom: 40,
-  },
-  floatingButton: {
-    position: "absolute",
-    bottom: 40,
-    right: 10,
-    backgroundColor: "saddlebrown",
-    borderRadius: 40,
-    padding: 16,
-  },
-  noResultsText: {
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 16,
-    color: "sienna",
-  },
-});
 
 export default BeanLibraryScreen;

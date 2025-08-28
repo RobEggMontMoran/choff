@@ -14,6 +14,4 @@ const AnalyticsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({});
-
 export default AnalyticsScreen;

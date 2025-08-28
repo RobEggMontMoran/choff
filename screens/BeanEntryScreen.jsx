@@ -177,7 +177,7 @@ const BeanEntryScreen = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "blanchedalmond" }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={local.scrollContent} keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerStyle={global.scrollContent} keyboardShouldPersistTaps="handled">
             <View style={global.alignCenter}>
               <Text style={global.headingL}>{existingBean ? "Edit Bean" : "Add New Bean"}</Text>
               <Text style={global.subheadingM}>Log your Espresso Bean Details</Text>
@@ -185,18 +185,24 @@ const BeanEntryScreen = () => {
             <View style={global.spacerM} />
 
             {/* Card for mandatory input fields */}
-            <Card style={local.card}>
+            <Card style={global.card}>
               <Card.Content>
-                <Text style={local.cardTitle}>Mandatory Details</Text>
-                <TextInput label="Bean Name" value={name} onChangeText={setName} style={local.input} mode="outlined" />
+                <Text style={global.cardTitle}>Mandatory Details</Text>
+                <TextInput label="Bean Name" value={name} onChangeText={setName} style={global.input} mode="outlined" />
                 <TextInput
                   label="Roaster"
                   value={roaster}
                   onChangeText={setRoaster}
-                  style={local.input}
+                  style={global.input}
                   mode="outlined"
                 />
-                <TextInput label="Origin" value={origin} onChangeText={setOrigin} style={local.input} mode="outlined" />
+                <TextInput
+                  label="Origin"
+                  value={origin}
+                  onChangeText={setOrigin}
+                  style={global.input}
+                  mode="outlined"
+                />
 
                 {/* Reusable component for date selection */}
                 <View>
@@ -204,8 +210,8 @@ const BeanEntryScreen = () => {
                 </View>
 
                 {/* Slider for overall rating */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Rating: {rating.toFixed(1)} / 10</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Rating: {rating.toFixed(1)} / 10</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={0}
@@ -222,9 +228,9 @@ const BeanEntryScreen = () => {
             </Card>
 
             {/* Card for optional input fields */}
-            <Card style={local.card}>
+            <Card style={global.card}>
               <Card.Content>
-                <Text style={local.cardTitle}>Optional Details</Text>
+                <Text style={global.cardTitle}>Optional Details</Text>
 
                 {/* Dropdown menu for Roast Type */}
                 <Menu
@@ -236,7 +242,7 @@ const BeanEntryScreen = () => {
                       icon="thermometer"
                       mode="outlined"
                       onPress={() => setRoastMenuVisible(true)}
-                      style={local.input}
+                      style={global.input}
                       textColor="saddlebrown"
                     >
                       {roastType || "Select Roast Type"}
@@ -276,7 +282,7 @@ const BeanEntryScreen = () => {
                       icon="grain"
                       mode="outlined"
                       onPress={() => setBlendMenuVisible(true)}
-                      style={local.input}
+                      style={global.input}
                       textColor="saddlebrown"
                     >
                       {blend || "Select Blend Type"}
@@ -316,7 +322,7 @@ const BeanEntryScreen = () => {
                       icon="beaker-outline"
                       mode="outlined"
                       onPress={() => setProcessMenuVisible(true)}
-                      style={local.input}
+                      style={global.input}
                       textColor="saddlebrown"
                     >
                       {processMethod || "Select Process Method"}
@@ -347,8 +353,8 @@ const BeanEntryScreen = () => {
                 </Menu>
 
                 {/* Slider for Bag Size */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Bag Size: {bagSize}g</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Bag Size: {bagSize}g</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={100}
@@ -363,8 +369,8 @@ const BeanEntryScreen = () => {
                 </View>
 
                 {/* Slider for Price */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Price: €{price.toFixed(2)}</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Price: €{price.toFixed(2)}</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
                     minimumValue={5}
@@ -379,8 +385,8 @@ const BeanEntryScreen = () => {
                 </View>
 
                 {/* Chip group for Flavour Profile */}
-                <View style={local.input}>
-                  <Text style={local.sliderLabel}>Flavour Profile</Text>
+                <View style={global.input}>
+                  <Text style={global.sliderLabel}>Flavour Profile</Text>
                   <View style={local.chipContainer}>
                     {availableFlavours.map((flavour) => (
                       <Chip
@@ -398,7 +404,7 @@ const BeanEntryScreen = () => {
 
                 {/* Switch for Decaf */}
                 <View style={local.switchContainer}>
-                  <Text style={local.sliderLabel}>Decaf?</Text>
+                  <Text style={global.sliderLabel}>Decaf?</Text>
                   <Switch value={isDecaf} onValueChange={setIsDecaf} color="peru" />
                 </View>
 
@@ -407,7 +413,7 @@ const BeanEntryScreen = () => {
                   label="Comments"
                   value={userNotes}
                   onChangeText={setUserNotes}
-                  style={local.input}
+                  style={global.input}
                   mode="outlined"
                   multiline
                   numberOfLines={4}
@@ -418,7 +424,7 @@ const BeanEntryScreen = () => {
                   icon="camera"
                   mode="outlined"
                   onPress={handleImagePick}
-                  style={local.input}
+                  style={global.input}
                   textColor="saddlebrown"
                   disabled={isSubmitting}
                 >
@@ -426,17 +432,17 @@ const BeanEntryScreen = () => {
                 </Button>
 
                 {/* Display a preview of the selected or existing image */}
-                {photoUrl ? <Image source={{ uri: photoUrl }} style={local.imagePreview} /> : null}
+                {photoUrl ? <Image source={{ uri: photoUrl }} style={global.imagePreview} /> : null}
               </Card.Content>
             </Card>
 
             {/* Conditionally render action buttons based on whether we are adding or editing */}
             {existingBean ? (
-              <View style={local.buttonRow}>
+              <View style={global.buttonRow}>
                 <Button
                   mode="outlined"
                   onPress={handleDelete}
-                  style={local.deleteButton}
+                  style={global.deleteButton}
                   textColor="firebrick"
                   loading={isSubmitting}
                   disabled={isSubmitting}
@@ -446,7 +452,7 @@ const BeanEntryScreen = () => {
                 <Button
                   mode="contained"
                   onPress={handleUpdate}
-                  style={local.updateButton}
+                  style={global.updateButton}
                   buttonColor="peru"
                   loading={isSubmitting}
                   disabled={isSubmitting}
@@ -458,7 +464,7 @@ const BeanEntryScreen = () => {
               <Button
                 mode="contained"
                 onPress={handleAdd}
-                style={local.button}
+                style={global.button}
                 buttonColor="peru"
                 loading={isSubmitting}
                 disabled={isSubmitting}
@@ -474,33 +480,6 @@ const BeanEntryScreen = () => {
 };
 
 const local = StyleSheet.create({
-  scrollContent: {
-    padding: 16,
-    backgroundColor: "blanchedalmond",
-  },
-  card: {
-    marginBottom: 20,
-    backgroundColor: "oldlace",
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "saddlebrown",
-  },
-  input: {
-    marginBottom: 16,
-    backgroundColor: "oldlace",
-  },
-  button: {
-    marginTop: 16,
-    marginBottom: 60,
-  },
-  sliderLabel: {
-    fontSize: 16,
-    color: "saddlebrown",
-    marginBottom: 8,
-  },
   switchContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -517,30 +496,6 @@ const local = StyleSheet.create({
     backgroundColor: "blanchedalmond",
     borderColor: "black",
     borderWidth: 0.5,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 16,
-    marginBottom: 60,
-  },
-  deleteButton: {
-    flex: 1,
-    marginRight: 8,
-    borderColor: "firebrick",
-  },
-  updateButton: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  imagePreview: {
-    width: 150,
-    height: 150,
-    borderRadius: 12,
-    alignSelf: "center",
-    marginVertical: 16,
-    borderWidth: 1,
-    borderColor: "peru",
   },
 });
 

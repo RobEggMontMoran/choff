@@ -112,4 +112,79 @@ export default StyleSheet.create({
   spacerXL: {
     marginBottom: 60,
   },
+
+  // Bean Library and Brew History Screen formatting
+  cardWrapper: {
+    marginBottom: 12,
+  },
+  listSpacing: {
+    paddingBottom: 40,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 50,
+    right: 10,
+    backgroundColor: "saddlebrown",
+    borderRadius: 40,
+    padding: 16,
+  },
+  noResultsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "sienna",
+  },
+
+  // Bean and Brew Entry Screen Formatting
+  scrollContent: {
+    padding: 16,
+    backgroundColor: "blanchedalmond",
+  },
+  card: {
+    marginBottom: 20,
+    backgroundColor: "oldlace",
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "saddlebrown",
+  },
+  input: {
+    marginBottom: 16,
+    backgroundColor: "oldlace",
+  },
+  button: {
+    marginTop: 16,
+    marginBottom: 60,
+  },
+  sliderLabel: {
+    fontSize: 16,
+    color: "saddlebrown",
+    marginBottom: 8,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginBottom: 60,
+  },
+  deleteButton: {
+    flex: 1,
+    marginRight: 8,
+    borderColor: "firebrick",
+  },
+  updateButton: {
+    flex: 1,
+    marginLeft: 8,
+  },
+  imagePreview: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    alignSelf: "center",
+    marginVertical: 16,
+    borderWidth: 1,
+    borderColor: "peru",
+  },
 });
