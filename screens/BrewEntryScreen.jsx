@@ -112,7 +112,6 @@ const BrewEntryScreen = () => {
     setIsSubmitting(true);
     try {
       await addBrew(getBrewDataFromState());
-      Alert.alert("Success!", "Your brew has been saved.");
       navigation.goBack();
     } catch (error) {
       Alert.alert("Error", "Could not save brew.");
@@ -127,7 +126,6 @@ const BrewEntryScreen = () => {
     setIsSubmitting(true);
     try {
       await updateBrew(existingBrew.id, getBrewDataFromState());
-      Alert.alert("Success!", "Your brew has been updated.");
       navigation.goBack();
     } catch (error) {
       Alert.alert("Error", "Could not update brew.");

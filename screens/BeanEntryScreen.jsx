@@ -93,7 +93,6 @@ const BeanEntryScreen = () => {
     setIsSubmitting(true);
     try {
       await addBean(getBeanDataFromState());
-      Alert.alert("Success!", "Your bean has been saved.");
       navigation.goBack();
     } catch (error) {
       Alert.alert("Error", "Could not save bean.");
@@ -108,7 +107,6 @@ const BeanEntryScreen = () => {
     setIsSubmitting(true);
     try {
       await updateBean(existingBean.id, getBeanDataFromState());
-      Alert.alert("Success!", "Your bean has been updated.");
       navigation.goBack();
     } catch (error) {
       Alert.alert("Error", "Could not update bean.");

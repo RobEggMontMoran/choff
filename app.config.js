@@ -1,5 +1,11 @@
 import "dotenv/config";
 
+/**
+ * This is the main configuration file for the Expo application.
+ * It defines metadata like the app name, version, icons, and splash screens.
+ * Crucially, the `extra` field is used to expose environment variables
+ * (like the GOOGLE_API_KEY from the .env file) to the application at build time.
+ */
 export default {
   expo: {
     name: "Choff",
