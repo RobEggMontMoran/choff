@@ -245,9 +245,9 @@ const BrewEntryScreen = () => {
                   <Text style={local.sliderLabel}>Dose: {dose.toFixed(1)}g</Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
-                    minimumValue={8}
-                    maximumValue={25}
-                    step={0.1}
+                    minimumValue={14}
+                    maximumValue={23}
+                    step={0.5}
                     value={dose}
                     onValueChange={setDose}
                     minimumTrackTintColor="peru"
@@ -265,7 +265,7 @@ const BrewEntryScreen = () => {
                     style={{ width: "100%", height: 40 }}
                     minimumValue={20}
                     maximumValue={60}
-                    step={0.1}
+                    step={0.5}
                     value={yieldAmount}
                     onValueChange={setYieldAmount}
                     minimumTrackTintColor="peru"
@@ -300,9 +300,9 @@ const BrewEntryScreen = () => {
                   </Text>
                   <Slider
                     style={{ width: "100%", height: 40 }}
-                    minimumValue={85}
-                    maximumValue={100}
-                    step={0.1}
+                    minimumValue={88}
+                    maximumValue={98}
+                    step={0.5}
                     value={temperature}
                     onValueChange={setTemperature}
                     minimumTrackTintColor="peru"

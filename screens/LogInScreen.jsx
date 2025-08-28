@@ -1,5 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import global from "../styles/globalStyles";
 import { loginUser, sendPasswordReset } from "../src/firebase/auth";
@@ -70,64 +83,70 @@ const LogInScreen = () => {
   };
 
   return (
-    <View style={global.screenCentered}>
-      <View style={global.alignCenter}>
-        <Text style={global.headingXL}>CHOFF</Text>
-        <Text style={global.subheadingL}>Your Daily Brew Companion</Text>
-      </View>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={global.screenCentered}>
+            <View style={global.alignCenter}>
+              <Text style={global.headingXL}>CHOFF</Text>
+              <Text style={global.subheadingL}>Your Daily Brew Companion</Text>
+            </View>
 
-      <View style={global.spacerXL} />
+            <View style={global.spacerXL} />
 
-      {/* Email Input */}
-      <View style={global.inputWrapper}>
-        <Text style={global.textLabelL}>Email Address</Text>
-        <TextInput
-          style={global.inputField}
-          placeholder="Enter email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
+            {/* Email Input */}
+            <View style={global.inputWrapper}>
+              <Text style={global.textLabelL}>Email Address</Text>
+              <TextInput
+                style={global.inputField}
+                placeholder="Enter email"
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
 
-      {/* Password Input */}
-      <View style={global.inputWrapper}>
-        <Text style={global.textLabelL}>Password</Text>
-        <TextInput
-          style={global.inputField}
-          placeholder="Enter password"
-          textContentType="password"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry={true}
-          value={password}
-          onChangeText={setPassword}
-        />
-      </View>
+            {/* Password Input */}
+            <View style={global.inputWrapper}>
+              <Text style={global.textLabelL}>Password</Text>
+              <TextInput
+                style={global.inputField}
+                placeholder="Enter password"
+                textContentType="password"
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
 
-      {/* Forgot Password Button */}
-      <TouchableOpacity onPress={handleForgotPassword} disabled={isSubmitting}>
-        <Text style={local.forgotPasswordText}>Forgot Password?</Text>
-      </TouchableOpacity>
+            {/* Forgot Password Button */}
+            <TouchableOpacity onPress={handleForgotPassword} disabled={isSubmitting}>
+              <Text style={local.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
 
-      {/* Submit Button */}
-      <View style={local.buttonMargin}>
-        <Button
-          title={isSubmitting ? "Logging In..." : "Log In"}
-          onPress={handleLogin}
-          color="peru"
-          disabled={isSubmitting}
-        />
-      </View>
+            {/* Submit Button */}
+            <View style={local.buttonMargin}>
+              <Button
+                title={isSubmitting ? "Logging In..." : "Log In"}
+                onPress={handleLogin}
+                color="peru"
+                disabled={isSubmitting}
+              />
+            </View>
 
-      {/* Navigation to Create Account Screen */}
-      <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} disabled={isSubmitting}>
-        <Text style={local.createAccountText}>Create Account</Text>
-      </TouchableOpacity>
-    </View>
+            {/* Navigation to Create Account Screen */}
+            <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} disabled={isSubmitting}>
+              <Text style={local.createAccountText}>Create Account</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

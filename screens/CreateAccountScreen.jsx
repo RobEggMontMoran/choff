@@ -1,5 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import global from "../styles/globalStyles";
 import { registerUser } from "../src/firebase/auth";
@@ -48,80 +61,86 @@ const CreateAccountScreen = () => {
   };
 
   return (
-    <View style={global.screenCentered}>
-      <View style={global.alignCenter}>
-        <Text style={global.headingL}>Create Account</Text>
-        <Text style={global.subheadingL}>Start your brew journey</Text>
-      </View>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={global.screenCentered}>
+            <View style={global.alignCenter}>
+              <Text style={global.headingL}>Create Account</Text>
+              <Text style={global.subheadingL}>Start your brew journey</Text>
+            </View>
 
-      <View style={global.spacerXL} />
+            <View style={global.spacerXL} />
 
-      {/* Email Input */}
-      <View style={global.inputWrapper}>
-        <Text style={global.textLabelL}>Email Address</Text>
-        <TextInput
-          style={global.inputField}
-          placeholder="Enter email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
+            {/* Email Input */}
+            <View style={global.inputWrapper}>
+              <Text style={global.textLabelL}>Email Address</Text>
+              <TextInput
+                style={global.inputField}
+                placeholder="Enter email"
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
 
-      {/* Password Input */}
-      <View style={global.inputWrapper}>
-        <Text style={global.textLabelL}>Password</Text>
-        <TextInput
-          style={global.inputField}
-          placeholder="Create password"
-          textContentType="password"
-          secureTextEntry={true}
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={password}
-          onChangeText={setPassword}
-        />
-        {/* Real-time feedback for password length */}
-        {password.length > 0 && password.length < 6 ? (
-          <Text style={global.errorText}>Password must be longer than 5 characters</Text>
-        ) : null}
-      </View>
+            {/* Password Input */}
+            <View style={global.inputWrapper}>
+              <Text style={global.textLabelL}>Password</Text>
+              <TextInput
+                style={global.inputField}
+                placeholder="Create password"
+                textContentType="password"
+                secureTextEntry={true}
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={password}
+                onChangeText={setPassword}
+              />
+              {/* Real-time feedback for password length */}
+              {password.length > 0 && password.length < 6 ? (
+                <Text style={global.errorText}>Password must be longer than 5 characters</Text>
+              ) : null}
+            </View>
 
-      {/* Password Confirmation */}
-      <View style={global.inputWrapper}>
-        <Text style={global.textLabelL}>Confirm Password</Text>
-        <TextInput
-          style={global.inputField}
-          placeholder="Confirm password"
-          textContentType="password"
-          secureTextEntry={true}
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-        {/* Real-time feedback for password mismatch */}
-        {passwordsDoNotMatch && <Text style={global.errorText}>Passwords do not match</Text>}
-      </View>
+            {/* Password Confirmation */}
+            <View style={global.inputWrapper}>
+              <Text style={global.textLabelL}>Confirm Password</Text>
+              <TextInput
+                style={global.inputField}
+                placeholder="Confirm password"
+                textContentType="password"
+                secureTextEntry={true}
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              {/* Real-time feedback for password mismatch */}
+              {passwordsDoNotMatch && <Text style={global.errorText}>Passwords do not match</Text>}
+            </View>
 
-      {/* Submit Button */}
-      <View style={local.buttonSpacing}>
-        <Button
-          title={isSubmitting ? "Creating..." : "Create Account"}
-          onPress={handleSignUp}
-          color="peru"
-          disabled={isSubmitting}
-        />
-      </View>
+            {/* Submit Button */}
+            <View style={local.buttonSpacing}>
+              <Button
+                title={isSubmitting ? "Creating..." : "Create Account"}
+                onPress={handleSignUp}
+                color="peru"
+                disabled={isSubmitting}
+              />
+            </View>
 
-      {/* Navigation to Log In Screen */}
-      <TouchableOpacity onPress={() => navigation.navigate("LogIn")}>
-        <Text style={{ color: "saddlebrown", textAlign: "center", marginBottom: 50 }}>Back to Log-in Screen</Text>
-      </TouchableOpacity>
-    </View>
+            {/* Navigation to Log In Screen */}
+            <TouchableOpacity onPress={() => navigation.navigate("LogIn")}>
+              <Text style={{ color: "saddlebrown", textAlign: "center", marginBottom: 50 }}>Back to Log-in Screen</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
