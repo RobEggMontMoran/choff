@@ -2,16 +2,26 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Searchbar, Button, Menu } from "react-native-paper";
 
-const SearchSortBar = ({ searchQuery, onSearchQueryChange, sortOption, onSortOptionChange }) => {
-  //state to control the visibility of the sort menu
+/**
+ * A reusable UI component that provides a search input field and a sort menu
+ * It is a controlled component, meaning it receives its state and the functions
+ * to update that state as props from its parent screen
+ * @param {string} searchQuery - The current value of the search input
+ * @param {function} onSearchQueryChange - Callback function to update the search query
+ * @param {string} sortOption - The currently selected sort option
+ * @param {function} onSortOptionChange - Callback function to update the sort option
+ */
+const SearchSortBar = ({ placeholder, searchQuery, onSearchQueryChange, sortOption, onSortOptionChange }) => {
+  // Local state to control the visibility of the sort menu
   const [menuVisible, setMenuVisible] = useState(false);
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
+  // Handles the selection of a new sort option
   const handleSortSelect = (option) => {
     onSortOptionChange(option); // Call the function passed from the parent screen
-    closeMenu(); // Close the menu after selection
+    closeMenu(); // Closes the menu after selection
   };
 
   // Helper function to display a user-friendly label for the current sort option
@@ -32,8 +42,9 @@ const SearchSortBar = ({ searchQuery, onSearchQueryChange, sortOption, onSortOpt
 
   return (
     <View style={styles.container}>
+      {/* The main search input field */}
       <Searchbar
-        placeholder="Search beans..."
+        placeholder={placeholder || "Search..."}
         onChangeText={onSearchQueryChange}
         value={searchQuery}
         style={styles.searchbar}
@@ -42,6 +53,7 @@ const SearchSortBar = ({ searchQuery, onSearchQueryChange, sortOption, onSortOpt
         inputStyle={{ color: "saddlebrown" }}
       />
 
+      {/* The dropdown menu for sorting options */}
       <Menu
         visible={menuVisible}
         onDismiss={closeMenu}

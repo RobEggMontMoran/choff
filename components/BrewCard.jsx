@@ -2,20 +2,26 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import global from "../styles/globalStyles";
 import StarRating from "./StarRating";
 
-// Card rendering function
+/**
+ * A presentational component that displays a summary of a single coffee brew
+ * It receives a 'brew' object as a prop and renders the key recipe details
+ * The 'onPress' prop makes the entire card tappable to navigate to the details screen
+ * @param {object} brew - The brew data object
+ * @param {function} onPress - The function to call when the card is pressed
+ */
 const BrewCard = ({ brew, onPress }) => {
-  // helper function to safely format 'date'
-  // checks if brew.date exists and has a toDate method before calling it
+  // Safely formats the date from a Firebase Timestamp to a readable string
+  // This prevents crashes if the date field is missing or in an unexpected format
   const formattedDate = brew.date?.toDate ? brew.date.toDate().toLocaleDateString("en-GB") : "No date";
 
   return (
     <TouchableOpacity style={local.card} onPress={onPress}>
       <View style={local.contentRow}>
-        {/* Left side of card - Brew Info */}
+        {/* Main content column for the brew's textual information */}
         <View style={local.textColumn}>
           <Text style={global.headingS}>{brew.beanName}</Text>
           <Text style={global.subheadingM}>
-            {brew.dose}g beans - {brew.yieldAmount}g espresso
+            {brew.dose}g in - {brew.yieldAmount}g out
           </Text>
           <Text style={global.subheadingM}>Date: {formattedDate}</Text>
           <View style={local.ratingRow}>
@@ -24,7 +30,7 @@ const BrewCard = ({ brew, onPress }) => {
           </View>
         </View>
 
-        {/* Right side of card - Photo */}
+        {/* Conditionally renders the user's photo, or a placeholder if none exists */}
         {brew.photoUrl ? <Image source={{ uri: brew.photoUrl }} style={local.photo} /> : <View style={local.photo} />}
       </View>
     </TouchableOpacity>

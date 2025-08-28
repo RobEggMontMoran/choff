@@ -106,6 +106,7 @@ const BrewHistoryScreen = () => {
 
       {/* SearchSortBar component */}
       <SearchSortBar
+        placeholder="Search brews..."
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         sortOption={sortOption}

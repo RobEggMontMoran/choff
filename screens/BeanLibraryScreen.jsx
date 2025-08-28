@@ -107,6 +107,7 @@ const BeanLibraryScreen = () => {
 
       {/* SearchSortBar component */}
       <SearchSortBar
+        placeholder="Search beans..."
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         sortOption={sortOption}

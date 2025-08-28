@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Button, Card, ActivityIndicator, Divider } from "react-native-paper";
-import { getBrewSuggestion } from "../src/firebase/services/aiService"; // Check path
+import { Button, Card, Divider } from "react-native-paper";
+import { getBrewSuggestion } from "../src/firebase/services/aiService";
 import global from "../styles/globalStyles";
 
+/**
+ * A self-contained component that provides the UI for the AI Barista Assistant
+ * It manages the API call state and displays the suggestion or any errors
+ * @param {object} brewData - The data for the specific brew to be analysed
+ */
 const AiBaristaBlock = ({ brewData }) => {
+  // State to manage the API response and UI
   const [suggestion, setSuggestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Handles the button press to fetch a new suggestion
   const handleGetSuggestion = async () => {
     setIsLoading(true);
     setError(null);
-    setSuggestion(""); // Clear previous suggestion
+    setSuggestion(""); // Clear any previous suggestion before fetching a new one
     try {
       const result = await getBrewSuggestion(brewData);
       setSuggestion(result);
@@ -43,10 +50,11 @@ const AiBaristaBlock = ({ brewData }) => {
           {isLoading ? "Thinking..." : "Get Recommendation"}
         </Button>
 
-        {/* Display area for the suggestion or error */}
+        {/* This block conditionally renders the result area only after a request has been made */}
         {(suggestion || error) && !isLoading && (
           <View style={local.resultContainer}>
             <Divider style={local.divider} />
+            {/* Renders either the success message or the error message */}
             {suggestion && <Text style={local.suggestionText}>{suggestion}</Text>}
             {error && <Text style={[local.suggestionText, { color: "firebrick" }]}>{error}</Text>}
           </View>

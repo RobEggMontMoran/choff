@@ -2,12 +2,18 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import global from "../styles/globalStyles";
 import StarRating from "./StarRating";
 
-// Card rendering function
+/**
+ * A presentational component that displays a summary of a single bag of coffee beans
+ * It receives a 'bean' object as a prop and renders the key details
+ * The 'onPress' prop makes the entire card tappable to navigate to the details screen
+ * @param {object} bean - The bean data object
+ * @param {function} onPress - The function to call when the card is pressed
+ */
 const BeanCard = ({ bean, onPress }) => {
   return (
     <TouchableOpacity style={local.card} onPress={onPress}>
       <View style={local.contentRow}>
-        {/* Left side of card - Bean Info */}
+        {/* Main content column for the bean's textual information */}
         <View style={local.textColumn}>
           <Text style={global.headingS}>{bean.name}</Text>
           <Text style={global.subheadingM}>{bean.roaster}</Text>
@@ -18,8 +24,7 @@ const BeanCard = ({ bean, onPress }) => {
           </View>
         </View>
 
-        {/* Right side of card - Photo */}
-        {/* <View style={local.photo} /> */}
+        {/* Conditionally renders the user's photo, or a placeholder if none exists */}
         {bean.photoUrl ? <Image source={{ uri: bean.photoUrl }} style={local.photo} /> : <View style={local.photo} />}
       </View>
     </TouchableOpacity>
